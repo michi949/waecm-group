@@ -2,7 +2,10 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: Roboto, sans-serif;
+  font-family: Poppins, Roboto, sans-serif;
+  background-image: linear-gradient( 109.6deg,  rgba(253,199,141,1) 11.3%, rgba(249,143,253,1) 100.2% );
+  background-size: cover;
+  color: black;
 }
 
 a {
@@ -16,10 +19,15 @@ a {
 }
 h1{
   font-size: 1rem;
-  color: white;
 }
 h2{
   font-size: 2rem;
   font-weight: lighter;
-  color: #6ACC98;
+}
+span{
+  font-size: 1.1rem;
+  background-image: linear-gradient(to right, #ef32d9 0%, #89fffd  51%, #ef32d9  100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% auto;
 }
