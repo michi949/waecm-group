@@ -1,4 +1,5 @@
 import Head from "next/head";
+import LoginSection from "../components/LoginSection";
 
 export default function Home() {
   return (
@@ -10,7 +11,7 @@ export default function Home() {
           rel="stylesheet"
         />
       </Head>
-      <button className="bg-white m-2 px-4 py-2 rounded-2xl font-bold">Login</button>
+      <LoginSection />
     </div>
   );
 }

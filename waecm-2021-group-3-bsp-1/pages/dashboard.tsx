@@ -1,5 +1,10 @@
 import React from "react";
+import DashboardSection from "../components/DashboardSection";
 
 export default function Dashboard() {
-  return <div>Dashboard</div>;
-};
+  return (
+    <div>
+      <DashboardSection />
+    </div>
+  );
+}
