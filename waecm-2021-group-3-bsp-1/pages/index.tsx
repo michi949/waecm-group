@@ -1,5 +1,5 @@
 import Head from "next/head";
-import LoginSection from "../components/LoginSection";
+import LoginSection from "../components/login-section/LoginSection";
 
 export default function Home() {
   return (

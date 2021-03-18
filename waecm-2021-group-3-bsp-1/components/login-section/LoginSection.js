@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { loadLoginScreen } from "../pages/api/oidc";
+import { loadLoginScreen } from "../../pages/api/oidc";
 
 const LoginSection = () => {
   const handleLogin = () => {
