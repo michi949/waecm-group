@@ -1,14 +1,16 @@
-import React from "react";
-import { useEffect } from "react";
-import styled from "styled-components";
-import Link from "next/link";
-import { getToken } from "../../pages/api/oidc";
-import { validateToken } from "../../pages/api/hello";
+import React, {useEffect} from 'react';
+import styled from 'styled-components';
+import Link from 'next/link';
+import {getToken} from '../../util/get-token';
 
 const DashboardSection = () => {
   useEffect(() => {
-    console.log(getToken()); //seeToken in Console
-    validateToken()
+      const id_token = getToken();
+      const nonce = window.localStorage.getItem("nonce");
+      fetch(`http://localhost:3000/api/login?nonce=${nonce}`, {
+          headers: {Authorization: `Bearer ${id_token}`,},
+        }
+      );
   }, []);
 
   return (
