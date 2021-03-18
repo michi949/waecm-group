@@ -27,7 +27,7 @@ export default (req, res) => {
         if (error) {
             res.status(401).json({ tokenValid: false });
         }else{
-            res.status(200).json({ tokenValid: true, payload: userInfo })
+            res.status(200).json({ tokenValid: true, userInfo })
         }
       });
 
