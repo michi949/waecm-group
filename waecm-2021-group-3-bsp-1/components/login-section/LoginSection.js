@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { loadLoginScreen } from "../pages/api/oidc";
+import { loadLoginScreen } from "../../pages/api/oidc";
 
 const LoginSection = () => {
   const handleLogin = () => {
@@ -70,9 +70,8 @@ const StyledButton = styled.button`
   }
 `;
 const ProjectName = styled.div`
-  margin: 1rem;
-  width: 90%;
-  text-align: right;
+  margin: 0.25rem;
+  text-align: center;
   h1 {
     display: inline-block;
     margin: 0;

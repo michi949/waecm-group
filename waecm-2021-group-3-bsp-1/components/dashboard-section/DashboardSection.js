@@ -2,11 +2,13 @@ import React from "react";
 import { useEffect } from "react";
 import styled from "styled-components";
 import Link from "next/link";
-import { getToken } from "../pages/api/oidc";
+import { getToken } from "../../pages/api/oidc";
+import { validateToken } from "../../pages/api/hello";
 
 const DashboardSection = () => {
   useEffect(() => {
     console.log(getToken()); //seeToken in Console
+    validateToken()
   }, []);
 
   return (
@@ -98,5 +100,6 @@ const Line = styled.div`
   background: white;
   top: -5px;
 `;
+
 
 export default DashboardSection;

@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 
+//Its Client Side why is it in API Folder? Which is Server Side only? 
 export const loadLoginScreen = () => {
   window.localStorage.removeItem("id_token");
   const nonce = uuidv4(); //generate unique identifier
