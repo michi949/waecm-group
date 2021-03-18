@@ -1,14 +1,21 @@
-import React from "react";
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Link from "next/link";
-import { getToken } from "../../pages/api/oidc";
-import { validateToken } from "../../pages/api/hello";
+import { getToken } from "../../util/get-token";
 
 const DashboardSection = () => {
+  const [userInfo, setUserInfo] = useState({});
+
   useEffect(() => {
-    console.log(getToken()); //seeToken in Console
-    validateToken()
+    const id_token = getToken();
+    const nonce = window.localStorage.getItem("nonce");
+    fetch(`http://localhost:3000/api/login?nonce=${nonce}`, {
+      headers: { Authorization: `Bearer ${id_token}` },
+    })
+      .then((x) => x.json())
+      .then((res) => {
+        setUserInfo(res.userInfo);
+      });
   }, []);
 
   return (
@@ -18,8 +25,8 @@ const DashboardSection = () => {
           <h2>Logged In</h2>
           <Line />
         </Title>
-        <StyledImage alt="hotboy" src="/filler.jpg" />
-        <p> One hot boy</p>
+        <StyledImage alt="hotboy" src={userInfo.picture} />
+        <p>{userInfo.name}</p>
         <StyledButton>
           <Link href="">Logout</Link>
         </StyledButton>
@@ -100,6 +107,5 @@ const Line = styled.div`
   background: white;
   top: -5px;
 `;
-
 
 export default DashboardSection;
