@@ -10,3 +10,7 @@ To start developing make sure you complete the following steps.
 1. Install [NodeJS](https://nodejs.org/) and make sure the commands `npm` and `node` work globally
 2. Within this project install dependencies with the command: `npm install`
 3. Run the development server with the command `npm run dev`
+
+
+### Info
+OpenID Connect Information Endpoint: https://waecm-sso.inso.tuwien.ac.at/auth/realms/waecm/.well-known/openid-configuration

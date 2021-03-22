@@ -1,0 +1,21 @@
+version: "3.7"
+
+services:
+  web:
+   build: .
+   container_name: waecm2021group3web
+   ports: 
+    - "3000:3000"
+  database:
+    image: 'mongo'
+    container_name: waecm2021group3db
+    environment: 
+      - MONGO_INITDB_DATABASE=waecm2021group3db
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=itsedev
+    volumes: 
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    ports: 
+      - '27017-27019:27017-27019'
+
+
