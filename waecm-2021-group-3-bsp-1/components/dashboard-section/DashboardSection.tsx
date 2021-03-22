@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import Link from "next/link";
 import { getToken } from "../../util/get-token";
+
 
 const DashboardSection = () => {
   const [userInfo, setUserInfo] = useState({});
-
+ 
   useEffect(() => {
     const id_token = getToken();
     const nonce = window.localStorage.getItem("nonce");
@@ -14,21 +14,35 @@ const DashboardSection = () => {
     })
       .then((x) => x.json())
       .then((res) => {
-        setUserInfo(res.userInfo);
+        res.tockenValid ? setUserInfo(res.userInfo) : handleInvalidLogin();
       });
   }, []);
+
+  const handleLogout = () => {
+    const nonce = window.localStorage.getItem("nonce");
+    window.localStorage.setItem("nonce", "");
+    window.location.assign(
+      `https://waecm-sso.inso.tuwien.ac.at/auth/realms/waecm/protocol/openid-connect/logout/?client_id=waecm&redirect_uri=http://localhost:3000&scope=openid%20profile&nonce=${nonce}`
+    );
+  }
+
+  const handleInvalidLogin = () => {
+    window.location.assign(
+      `http://localhost:3000/invalid-login`
+    );
+  }
 
   return (
     <StyledDashboardSection>
       <StyledCard>
         <Title>
-          <h2>Logged In</h2>
+          <h2> Login Successful </h2>
           <Line />
         </Title>
-        <StyledImage alt="hotboy" src={userInfo.picture} />
-        <p>{userInfo.name}</p>
-        <StyledButton>
-          <Link href="">Logout</Link>
+        <StyledImage alt="hotboy" src={userInfo === undefined ? "./filler.jpg" : userInfo.picture} />
+        <p>{userInfo === undefined ? "No Name" : userInfo.name}</p>
+        <StyledButton onClick={handleLogout}>
+            Logout
         </StyledButton>
       </StyledCard>
     </StyledDashboardSection>
