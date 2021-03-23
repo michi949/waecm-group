@@ -14,7 +14,7 @@ const DashboardSection = () => {
     })
       .then((x) => x.json())
       .then((res) => {
-        res.tockenValid ? setUserInfo(res.userInfo) : handleInvalidLogin();
+        res.tokenValid ? setUserInfo(res.userInfo) : handleInvalidLogin();
       });
   }, []);
 
