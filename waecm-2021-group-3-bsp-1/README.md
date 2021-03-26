@@ -12,11 +12,13 @@ With Next.js it is also possible to set up a custom API in the same project with
 ### Database: mongoDB
 The main reason why we used the NoSql database mongoDB is that we wanted to gather more knowledge with it. Another reason why we chose mongoDB is that it is highly recommended for rapid prototyping of web applications.
 
+## Functionality
+After the Docker container has been successfully launched with our image, it is possible to open the web application via the path: http://localhost:3000/. The first page will always be the login screen, which contains only one button to start the login process. This button will redirect the user to the specified OpenID Connect Provider for the authentication. By calling the OpenID Connect Provider, we pass various settings such as a client-specific nonce, our client ID, and the path to which the provider should redirect after successful or invalid authentication. In this case, the user will land on our dashboard component, where we pick up the token and client-specific nonce and send a request to our /api/login endpoint, which uses the recommended library to validate the received token and nonce on our OpenID Connect provider. If the token is valid, the endpoint returns to the client with status code 200 and the user information, which is then set in the client. If the token is not valid, the endpoint returns with status code 401 and the client redirects the user to an error page , from which they can return to the login page. On the dashboard component there is a button that allows to log out from the web application and revoke all existing tokens. 
+
 ## Docker
 
 ### Docker Image 
 * [waecm-2021-group-03-bsp-1](https://hub.docker.com/r/waecm2021group03/waecm-2021-group-03-bsp-1)
-
 
 
 ```
