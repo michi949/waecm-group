@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {getToken} from '../../util/get-token';
-import Dialog from '../Dialog';
-import Button from '../Button';
-import Title from '../Title';
+import {getToken} from '../util/get-token';
+import Dialog from '../components/Dialog';
+import Title from '../components/Title';
+import Button from '../components/Button';
 
+export default function Dashboard(): React.ReactElement {
 
-const DashboardSection = (): React.ReactElement => {
-	const [userInfo, setUserInfo] = useState({});
+	const [userInfo, setUserInfo] = useState(null);
 
 	useEffect(() => {
 		const id_token = getToken();
@@ -37,12 +37,11 @@ const DashboardSection = (): React.ReactElement => {
 	return (
 		<Dialog>
 			<Title>Login was successful</Title>
-			<img alt="hotboy" src={userInfo === undefined ? './filler.jpg' : userInfo.picture}/>
-			<p>{userInfo === undefined ? 'No Name' : userInfo.name}</p>
+			<img alt="hotboy" src={userInfo?.picture ?? './filler.jpg'}/>
+			<p>{userInfo?.name ?? 'No Name'}</p>
 			<Button onClick={handleLogout}>
-        Logout
+				Logout
 			</Button>
 		</Dialog>
 	);
-};
-export default DashboardSection;
+}
