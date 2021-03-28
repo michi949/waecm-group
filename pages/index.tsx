@@ -1,9 +1,9 @@
 import Head from 'next/head';
 import React from 'react';
 import {v4 as uuidv4} from 'uuid';
-import Dialog from '../components/Dialog';
-import Title from '../components/Title';
-import Button from '../components/Button';
+import Dialog from '../components/dialog';
+import Title from '../components/title';
+import Button from '../components/button';
 
 export default function Home(): React.ReactElement {
 	const handleLogin = () => {

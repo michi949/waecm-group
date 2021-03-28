@@ -1,7 +1,7 @@
 import React from 'react';
-import Dialog from '../components/Dialog';
-import Title from '../components/Title';
-import Button from '../components/Button';
+import Dialog from '../components/dialog';
+import Title from '../components/title';
+import Button from '../components/button';
 
 export default function InvalidLogin(): React.ReactElement {
 	const navigateToMainPage = () => window.location.assign('http://localhost:3000');

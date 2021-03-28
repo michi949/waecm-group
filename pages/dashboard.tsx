@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {getToken} from '../util/get-token';
-import Dialog from '../components/Dialog';
-import Title from '../components/Title';
-import Button from '../components/Button';
+import Dialog from '../components/dialog';
+import Title from '../components/title';
+import Button from '../components/button';
 
 export default function Dashboard(): React.ReactElement {
 
