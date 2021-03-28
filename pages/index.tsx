@@ -5,12 +5,13 @@ import Dialog from '../components/dialog';
 import Title from '../components/title';
 import Button from '../components/button';
 import storage from '../util/storage';
+import globals from '../util/globals';
 
 export default function Home(): React.ReactElement {
 	const handleLogin = () => {
 		const nonce = uuidv4();
 		storage.setItem('nonce', nonce);
-		window.location.assign(`https://waecm-sso.inso.tuwien.ac.at/auth/realms/waecm/protocol/openid-connect/auth/?client_id=waecm&response_type=id_token&prompt=consent&redirect_uri=http://localhost:3000/dashboard&scope=openid%20profile&nonce=${nonce}`);
+		window.location.assign(`${globals.openid_host}/auth/?client_id=${globals.openid_clientid}&response_type=id_token&prompt=consent&redirect_uri=${globals.host}/dashboard&scope=openid%20profile&nonce=${nonce}`);
 	};
 
 	return (

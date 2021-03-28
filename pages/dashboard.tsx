@@ -4,16 +4,18 @@ import Dialog from '../components/dialog';
 import Title from '../components/title';
 import Button from '../components/button';
 import storage from '../util/storage';
-
+import globals from '../util/globals';
+import {useRouter} from 'next/router';
 
 export default function Dashboard(): React.ReactElement {
 
 	const [userInfo, setUserInfo] = useState(null);
+	const router = useRouter();
 
 	useEffect(() => {
 		const id_token = getToken();
 		const nonce = storage.getItem('nonce');
-    fetch(`http://localhost:3000/api/login?nonce=${nonce}`, {
+    fetch(`${globals.host}/api/login?nonce=${nonce}`, {
 			headers: {Authorization: `Bearer ${id_token}`},
 		})
 			.then((x) => x.json())
@@ -25,16 +27,10 @@ export default function Dashboard(): React.ReactElement {
 	const handleLogout = () => {
 		const nonce = storage.getItem('nonce');
 		storage.setItem('nonce', '');
-		window.location.assign(
-			`https://waecm-sso.inso.tuwien.ac.at/auth/realms/waecm/protocol/openid-connect/logout/?client_id=waecm&redirect_uri=http://localhost:3000&scope=openid%20profile&nonce=${nonce}`
-		);
+		window.location.assign(`${globals.openid_host}/logout/?client_id=${globals.openid_clientid}&redirect_uri=${globals.host}&scope=openid%20profile&nonce=${nonce}`);
 	};
 
-	const handleInvalidLogin = () => {
-		window.location.assign(
-			'http://localhost:3000/invalid-login'
-		);
-	};
+	const handleInvalidLogin = () => router.push(`/invalid-login`);
 
 	return (
 		<Dialog>
