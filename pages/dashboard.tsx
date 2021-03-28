@@ -3,6 +3,8 @@ import {getToken} from '../util/get-token';
 import Dialog from '../components/dialog';
 import Title from '../components/title';
 import Button from '../components/button';
+import storage from '../util/storage';
+
 
 export default function Dashboard(): React.ReactElement {
 
@@ -10,8 +12,8 @@ export default function Dashboard(): React.ReactElement {
 
 	useEffect(() => {
 		const id_token = getToken();
-		const nonce = window.localStorage.getItem('nonce');
-		fetch(`http://localhost:3000/api/login?nonce=${nonce}`, {
+		const nonce = storage.getItem('nonce');
+    fetch(`http://localhost:3000/api/login?nonce=${nonce}`, {
 			headers: {Authorization: `Bearer ${id_token}`},
 		})
 			.then((x) => x.json())
@@ -21,8 +23,8 @@ export default function Dashboard(): React.ReactElement {
 	}, []);
 
 	const handleLogout = () => {
-		const nonce = window.localStorage.getItem('nonce');
-		window.localStorage.setItem('nonce', '');
+		const nonce = storage.getItem('nonce');
+		storage.setItem('nonce', '');
 		window.location.assign(
 			`https://waecm-sso.inso.tuwien.ac.at/auth/realms/waecm/protocol/openid-connect/logout/?client_id=waecm&redirect_uri=http://localhost:3000&scope=openid%20profile&nonce=${nonce}`
 		);
