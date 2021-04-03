@@ -4,6 +4,7 @@
     "target": "es5",
     "sourceMap": true,
     "lib": [
+      "DOM",
       "dom",
       "dom.iterable",
       "esnext"
