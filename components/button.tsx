@@ -1,8 +1,8 @@
 import React from 'react';
 
 export default function Button({children, onClick}: {children: React.ReactNode, onClick: () => void}): JSX.Element {
-	return <button
-		className="mt-8 bg-yellow-200 w-full p-2 rounded border border-gray-400"
+	return <button 
+			class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-3xl w-60"
 		onClick={onClick}>
 		{children}
 	</button>;

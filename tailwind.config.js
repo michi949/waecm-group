@@ -9,5 +9,19 @@ module.exports = {
 	variants: {
 		extend: {},
 	},
-	plugins: [],
+	plugins: [
+		require("@tailwindcss/forms")({
+		  strategy: 'class',
+		}),
+	   ],
+	theme: {
+	minHeight: {
+		'0': '0',
+		'1/4': '25%',
+		'1/2': '50%',
+		'3/4': '75%',
+		'5/6': '85%',
+		'full': '100%',
+		}
+	}
 };
