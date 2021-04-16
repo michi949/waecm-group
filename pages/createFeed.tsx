@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import Link from "next/Link";
 import { getFeedItemsFromLocalStorage } from "../util/getFeedItemsFromLocalStorage";
 import { saveFeedItemsToLocalStorage } from "../util/saveFeedItemsToLocalStorage";
+import { FeedItem } from "../util/feedItem";
+import storage from "../util/storage";
 
 export default function CreateFeed(): React.ReactElement {
   const [url, setUrl] = useState("");
@@ -11,10 +13,10 @@ export default function CreateFeed(): React.ReactElement {
   const [status, setStatus] = useState(true);
   const [edit, setEdit] = useState(false);
 
-  const [feedItems, setFeedItems] = useState([]);
+  const [feedItems, setFeedItems] = useState<FeedItem[]>([]);
 
   useEffect(() => {
-    getFeedItemsFromLocalStorage(setFeedItems);
+    setFeedItems(storage.getItem("feedItems") ?? []);
   }, []);
   useEffect(() => {
     saveFeedItemsToLocalStorage(feedItems);
@@ -29,32 +31,32 @@ export default function CreateFeed(): React.ReactElement {
           (temp) => temp.id !== feedItem.id
         );
         setFeedItems(editedFeedItems);
-        }
-      });
+      }
+    });
   }, [feedItems]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if(feedItems.length < 3){
-    const newFeedItem = {
-      id: new Date().getTime(),
-      url: url,
-      keywords: keywords,
-      includeAll: includeAll,
-      icon: icon,
-      status: status,
-      edit: edit,
-    };
+    if (feedItems.length < 3) {
+      const newFeedItem = {
+        id: new Date().getTime(),
+        url: url,
+        keywords: keywords,
+        includeAll: includeAll,
+        icon: icon,
+        status: status,
+        edit: edit,
+      };
 
-    setFeedItems([...feedItems].concat(newFeedItem));
-    setUrl("");
-    setKeywords("");
-    setInlcudeAll(false);
-    setIcon("/Twitter.png");
-    setStatus(true);
-    alert("Saved succesfully!");}
-    else{
-      alert("You can't add more than 3 feeds!")
+      setFeedItems([...feedItems].concat(newFeedItem));
+      setUrl("");
+      setKeywords("");
+      setInlcudeAll(false);
+      setIcon("/Twitter.png");
+      setStatus(true);
+      alert("Saved succesfully!");
+    } else {
+      alert("You can't add more than 3 feeds!");
     }
   };
 

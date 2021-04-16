@@ -58,7 +58,11 @@ export default function ManageFeed(): React.ReactElement {
               key={feedItem.id}
             >
               <img className="max-w-8 max-h-8" src={feedItem.icon} />
-              <div className={!feedItem.status ? "text-gray-400 font-light" : ""}>{feedItem.url.substring(0, 20)}</div>
+              <div
+                className={!feedItem.status ? "text-gray-400 font-light" : ""}
+              >
+                {feedItem.url.substring(0, 20)}
+              </div>
               <FontAwesomeIcon
                 icon={faPen}
                 onClick={() => editHandler(feedItem.id)}
@@ -68,13 +72,14 @@ export default function ManageFeed(): React.ReactElement {
                 onClick={() => deleteHandler(feedItem.id)}
               />
             </div>
-          ))}            
-          {(feedItems.length < 3 ) ? <Link href="/createFeed">
-            <button className="bg-gray-200 hover:bg-blue-700 hover:text-white text-black font-bold py-2 px-4 rounded-3xl w-28">
-              + add Feed
-            </button>
-          </Link> : null}
-          
+          ))}
+          {feedItems.length < 3 ? (
+            <Link href="/createFeed">
+              <button className="bg-gray-200 hover:bg-blue-700 hover:text-white text-black font-bold py-2 px-4 rounded-3xl w-28">
+                + add Feed
+              </button>
+            </Link>
+          ) : null}
         </main>
       </div>
     </div>
