@@ -2,15 +2,18 @@ import React, {useEffect, useState} from 'react';
 import Link from 'next/Link';
 import {FeedItem} from '../util/feedItem';
 import storage from '../util/storage';
+import {Navigation} from '../components/navigation';
+import Dialog from '../components/dialog';
+import {Input} from '../components/input';
 
 const generateFeedItem: () => FeedItem = () => ({
   edit: false,
   status: true,
   includeAll: false,
-  keywords: "",
-  url: "",
+  keywords: '',
+  url: '',
   id: new Date().getTime(),
-  icon: "/Twitter.png"
+  icon: '/Twitter.png'
 });
 
 export default function CreateFeed(): React.ReactElement {
@@ -20,106 +23,87 @@ export default function CreateFeed(): React.ReactElement {
   };
 
   useEffect(() => {
-    const feedItems = storage.getItem("feedItems") ?? [];
+    const feedItems = storage.getItem('feedItems') ?? [];
     setFeedItem(feedItems.find(item => item.edit) ?? generateFeedItem());
   }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const feedItems = storage.getItem("feedItems") ?? [];
+    const feedItems = storage.getItem('feedItems') ?? [];
     const newFeedItems = [...feedItems.filter(item => !item.edit), {...feedItem, edit: false}];
-    storage.setItem("feedItems", newFeedItems);
+    storage.setItem('feedItems', newFeedItems);
     setFeedItem(generateFeedItem());
 
-    alert("Saved succesfully!");
+    alert('Saved succesfully!');
   };
 
   return (
-    <div className="grid place-items-center w-screen h-screen">
-      <div className="flex flex-col min-h-5/6 w-80 bg-white p-4 rounded-3xl neomorphism">
-        <header className="flex content-center justify-evenly px-4 py-4 w-full">
-          <Link href="/feed">
-            <button className="bg-gray-200 hover:bg-blue-700 hover:text-white text-black font-bold py-2 px-4 rounded-3xl w-28">
-              Tweets
-            </button>
-          </Link>
+    <Dialog>
+      <Navigation/>
+      <main className="flex flex-col content-start">
+        <form onSubmit={handleSubmit}>
+          <Input
+            label="Complete RSS - Feed URL:"
+            type="url"
+            value={feedItem.url}
+            onChange={e => patchFeedItem('url', e.target.value)}
+            pattern="https?://.+"
+            placeholder="https://rss.orf.at/news.xml"
+          />
+          <Input
+            label="RSS - Feed Keywords:"
+            type="text"
+            onChange={(e) => patchFeedItem('keywords', e.target.value)}
+            value={feedItem.keywords}
+            placeholder="Formel 1, Rennen"
+          />
+          <div className="inline-flex items-center pt-1">
+            <input
+              type="checkbox"
+              onChange={() => patchFeedItem('includeAll', !feedItem.includeAll)}
+              checked={feedItem.includeAll}
+              className="form-checkbox"
+            />
+            <p className="ml-2">include all keywords</p>
+          </div>
+        <label className="block my-4">
+          <p>Optional Icon:</p>
+          <img src={feedItem.icon} className="max-w-12 max-h-12 m-1" alt="Icon"/>
+          <input
+            type="file"
+            onChange={(e) => patchFeedItem('url', URL.createObjectURL(e.target.files[0]))}
+            className="hidden"
+            accept="image/png, image/svg"
+          />
+        </label>
+        <label className="flex items-center">
+          <input
+            type="checkbox"
+            onChange={() => patchFeedItem('status', !feedItem.status)}
+            checked={feedItem.status}
+            className="form-checkbox"
+          />
+          <p className="ml-2">Feed active</p>
+        </label>
+        <div className="flex flex-col items-center m-4">
           <Link href="/manageFeed">
-            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-3xl w-28">
-              Settings
+            <button
+              type="button"
+              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-3xl w-48 mt-1"
+            >
+              Abort
             </button>
           </Link>
-        </header>
-        <main className="flex flex-col content-start">
-          <form onSubmit={handleSubmit}>
-            <label className="block mt-2">
-              <p>Complete RSS - Feed URL:</p>
-              <input
-                type="url"
-                onChange={(e) => patchFeedItem("url", e.target.value)}
-                pattern="https?://.+"
-                value={feedItem.url}
-                className="form-input mt-1 block w-full border rounded-3xl"
-                placeholder="https://rss.orf.at/news.xml"
-              />
-            </label>
-            <label className="block mt-4">
-              <p>RSS - Feed Keywords:</p>
-              <input
-                type="text"
-                onChange={(e) => patchFeedItem("keywords",e.target.value)}
-                value={feedItem.keywords}
-                className="form-input mt-1 block w-full border rounded-3xl"
-                placeholder="Formel 1, Rennen"
-              />
-              <div className="inline-flex items-center pt-1">
-                <input
-                  type="checkbox"
-                  onChange={() => patchFeedItem("includeAll", !feedItem.includeAll)}
-                  checked={feedItem.includeAll}
-                  className="form-checkbox"
-                />
-                <p className="ml-2">include all keywords</p>
-              </div>
-            </label>
-            <label className="block my-4">
-              <p>Optional Icon:</p>
-              <img src={feedItem.icon} className="max-w-12 max-h-12 m-1" alt="Icon" />
-              <input
-                type="file"
-                onChange={(e) => patchFeedItem("url", URL.createObjectURL(e.target.files[0]))}
-                className="hidden"
-                accept="image/png, image/svg"
-              />
-            </label>
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                onChange={() => patchFeedItem("status", !feedItem.status)}
-                checked={feedItem.status}
-                className="form-checkbox"
-              />
-              <p className="ml-2">Feed active</p>
-            </label>
-            <div className="flex flex-col items-center m-4">
-              <Link href="/manageFeed">
-                <button
-                  type="button"
-                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-3xl w-48 mt-1"
-                >
-                  Abort
-                </button>
-              </Link>
-              <button
-                type="submit"
-                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-3xl w-48 mt-1"
-              >
-                Save
-              </button>
-            </div>
-          </form>
-        </main>
-      </div>
-    </div>
-  );
+          <button
+            type="submit"
+            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-3xl w-48 mt-1"
+          >
+            Save
+          </button>
+        </div>
+      </form>
+    </main>
+</Dialog>
+);
 }
