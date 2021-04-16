@@ -3,7 +3,7 @@ import Link from 'next/Link'
 import Dialog from '../components/dialog';
 import {Navigation} from '../components/navigation';
 
-export default function InvalidLogin(): React.ReactElement {
+export default function Feed(): React.ReactElement {
 	return (
 		<Dialog>
 			<Navigation/>
