@@ -25,13 +25,14 @@ export default function CreateFeed(): React.ReactElement {
   useEffect(() => {
     const feedItems = storage.getItem('feedItems') ?? [];
     setFeedItem(feedItems.find(item => item.edit) ?? generateFeedItem());
+    storage.setItem("feedItems", feedItems.map(item => ({...item, edit: false})));
   }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     const feedItems = storage.getItem('feedItems') ?? [];
-    const newFeedItems = [...feedItems.filter(item => !item.edit), {...feedItem, edit: false}];
+    const newFeedItems = [...feedItems.filter(item => item.id !== feedItem.id), {...feedItem, edit: false}];
     storage.setItem('feedItems', newFeedItems);
     setFeedItem(generateFeedItem());
 
