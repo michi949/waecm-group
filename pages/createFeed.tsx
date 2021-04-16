@@ -1,63 +1,38 @@
-import React, { useEffect, useState } from "react";
-import Link from "next/Link";
-import { getFeedItemsFromLocalStorage } from "../util/getFeedItemsFromLocalStorage";
-import { saveFeedItemsToLocalStorage } from "../util/saveFeedItemsToLocalStorage";
-import { FeedItem } from "../util/feedItem";
-import storage from "../util/storage";
+import React, {useEffect, useState} from 'react';
+import Link from 'next/Link';
+import {FeedItem} from '../util/feedItem';
+import storage from '../util/storage';
+
+const generateFeedItem: () => FeedItem = () => ({
+  edit: false,
+  status: true,
+  includeAll: false,
+  keywords: "",
+  url: "",
+  id: new Date().getTime(),
+  icon: "/Twitter.png"
+});
 
 export default function CreateFeed(): React.ReactElement {
-  const [url, setUrl] = useState("");
-  const [keywords, setKeywords] = useState("");
-  const [includeAll, setInlcudeAll] = useState(false);
-  const [icon, setIcon] = useState("/Twitter.png");
-  const [status, setStatus] = useState(true);
-  const [edit, setEdit] = useState(false);
-
-  const [feedItems, setFeedItems] = useState<FeedItem[]>([]);
+  const [feedItem, setFeedItem] = useState<FeedItem>(generateFeedItem());
+  const patchFeedItem = (key: string, value: any) => {
+    setFeedItem(feedItem => ({...feedItem, [key]: value}));
+  };
 
   useEffect(() => {
-    setFeedItems(storage.getItem("feedItems") ?? []);
+    const feedItems = storage.getItem("feedItems") ?? [];
+    setFeedItem(feedItems.find(item => item.edit) ?? generateFeedItem());
   }, []);
-  useEffect(() => {
-    saveFeedItemsToLocalStorage(feedItems);
-    feedItems.forEach((feedItem) => {
-      if (feedItem.edit === true) {
-        setUrl(feedItem.url);
-        setKeywords(feedItem.keywords);
-        setInlcudeAll(feedItem.includeAll);
-        setIcon(feedItem.icon);
-        setStatus(feedItem.status);
-        const editedFeedItems = [...feedItems].filter(
-          (temp) => temp.id !== feedItem.id
-        );
-        setFeedItems(editedFeedItems);
-      }
-    });
-  }, [feedItems]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (feedItems.length < 3) {
-      const newFeedItem = {
-        id: new Date().getTime(),
-        url: url,
-        keywords: keywords,
-        includeAll: includeAll,
-        icon: icon,
-        status: status,
-        edit: edit,
-      };
 
-      setFeedItems([...feedItems].concat(newFeedItem));
-      setUrl("");
-      setKeywords("");
-      setInlcudeAll(false);
-      setIcon("/Twitter.png");
-      setStatus(true);
-      alert("Saved succesfully!");
-    } else {
-      alert("You can't add more than 3 feeds!");
-    }
+    const feedItems = storage.getItem("feedItems") ?? [];
+    const newFeedItems = [...feedItems.filter(item => !item.edit), {...feedItem, edit: false}];
+    storage.setItem("feedItems", newFeedItems);
+    setFeedItem(generateFeedItem());
+
+    alert("Saved succesfully!");
   };
 
   return (
@@ -81,9 +56,9 @@ export default function CreateFeed(): React.ReactElement {
               <p>Complete RSS - Feed URL:</p>
               <input
                 type="url"
-                onChange={(e) => setUrl(e.target.value)}
+                onChange={(e) => patchFeedItem("url", e.target.value)}
                 pattern="https?://.+"
-                value={url}
+                value={feedItem.url}
                 className="form-input mt-1 block w-full border rounded-3xl"
                 placeholder="https://rss.orf.at/news.xml"
               />
@@ -92,16 +67,16 @@ export default function CreateFeed(): React.ReactElement {
               <p>RSS - Feed Keywords:</p>
               <input
                 type="text"
-                onChange={(e) => setKeywords(e.target.value)}
-                value={keywords}
+                onChange={(e) => patchFeedItem("keywords",e.target.value)}
+                value={feedItem.keywords}
                 className="form-input mt-1 block w-full border rounded-3xl"
                 placeholder="Formel 1, Rennen"
               />
               <div className="inline-flex items-center pt-1">
                 <input
                   type="checkbox"
-                  onChange={() => setInlcudeAll(!includeAll)}
-                  checked={includeAll}
+                  onChange={() => patchFeedItem("includeAll", !feedItem.includeAll)}
+                  checked={feedItem.includeAll}
                   className="form-checkbox"
                 />
                 <p className="ml-2">include all keywords</p>
@@ -109,12 +84,10 @@ export default function CreateFeed(): React.ReactElement {
             </label>
             <label className="block my-4">
               <p>Optional Icon:</p>
-              <img src={icon} className="max-w-12 max-h-12 m-1" alt="Icon" />
+              <img src={feedItem.icon} className="max-w-12 max-h-12 m-1" alt="Icon" />
               <input
                 type="file"
-                onChange={(e) =>
-                  setIcon(URL.createObjectURL(e.target.files[0]))
-                }
+                onChange={(e) => patchFeedItem("url", URL.createObjectURL(e.target.files[0]))}
                 className="hidden"
                 accept="image/png, image/svg"
               />
@@ -122,8 +95,8 @@ export default function CreateFeed(): React.ReactElement {
             <label className="flex items-center">
               <input
                 type="checkbox"
-                onChange={() => setStatus(!status)}
-                checked={status}
+                onChange={() => patchFeedItem("status", !feedItem.status)}
+                checked={feedItem.status}
                 className="form-checkbox"
               />
               <p className="ml-2">Feed active</p>

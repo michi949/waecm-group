@@ -5,4 +5,5 @@ export interface FeedItem{
     includeAll: boolean,
     icon: string,
     status: boolean,
+    edit: boolean
 }
