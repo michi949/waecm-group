@@ -23,11 +23,14 @@ export default function Home(): React.ReactElement {
 					rel="stylesheet"
 				/>
 			</Head>
+			<div className="grid place-items-center w-screen h-screen" >
 			<Dialog>
+				<img src="/Twitter.png" alt="twitter"/>
 				<Title>waecm 2021</Title>
-				<div className="italic">group 3 bsp 1</div>
+				<div className="italic">group-03-bsp-02</div>
 				<Button onClick={handleLogin}>Login</Button>
 			</Dialog>
+			</div>
 		</div>
 	);
 }
