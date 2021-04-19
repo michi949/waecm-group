@@ -52,3 +52,7 @@ To start developing make sure you complete the following steps.
 
 ### Info
 OpenID Connect Information Endpoint: https://waecm-sso.inso.tuwien.ac.at/auth/realms/waecm/.well-known/openid-configuration
+
+## Twitter Development Account
+Benutzer: @WaecmGroup3
+Passwort: QBE>3[">aG}@A56fUi^#
