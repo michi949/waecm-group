@@ -55,4 +55,5 @@ OpenID Connect Information Endpoint: https://waecm-sso.inso.tuwien.ac.at/auth/re
 
 ## Twitter Development Account
 Benutzer: @WaecmGroup3
+
 Passwort: QBE>3[">aG}@A56fUi^#
