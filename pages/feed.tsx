@@ -1,5 +1,5 @@
 import React from 'react';
-import Link from 'next/Link'
+import Link from 'next/link'
 import Dialog from '../components/dialog';
 import {Navigation} from '../components/navigation';
 

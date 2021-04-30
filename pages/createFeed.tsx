@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import Link from 'next/Link';
+import Link from 'next/link';
 import {FeedItem} from '../util/feedItem';
 import storage from '../util/storage';
 import {Navigation} from '../components/navigation';
