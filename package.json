@@ -15,6 +15,7 @@
     "@tailwindcss/forms": "^0.3.2",
     "idtoken-verifier": "^2.1.0",
     "mongodb": "^3.6.5",
+    "mongoose": "^5.12.7",
     "next": "10.0.8",
     "react": "17.0.1",
     "react-dom": "17.0.1",
