@@ -35,7 +35,7 @@ export default function Dashboard(): React.ReactElement {
 	return (
 		<Dialog>
 			<Title>Login was successful</Title>
-			<img alt="hotboy" src={userInfo?.picture ?? './filler.jpg'}/>
+			<img alt="hotboy" src={userInfo?.picture ?? './twitter.jpg'}/>
 			<p>{userInfo?.name ?? 'No Name'}</p>
 			<Button onClick={handleLogout}>
 				Logout
