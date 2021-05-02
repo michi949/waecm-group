@@ -30,6 +30,10 @@ export default function Dashboard(): React.ReactElement {
 		window.location.assign(`${globals.openid_host}/logout/?client_id=${globals.openid_clientid}&redirect_uri=${globals.host}&scope=openid%20profile&nonce=${nonce}`);
 	};
 
+	const navigateToTweetPage = () => {
+		router.push('/feed')
+	}
+
 	const handleInvalidLogin = () => router.push(`/invalid-login`);
 
 	return (
@@ -37,6 +41,9 @@ export default function Dashboard(): React.ReactElement {
 			<Title>Login was successful</Title>
 			<img alt="hotboy" src={userInfo?.picture ?? './twitter.jpg'}/>
 			<p>{userInfo?.name ?? 'No Name'}</p>
+			<Button onClick={navigateToTweetPage}>
+				Navigate to Tweets
+			</Button>
 			<Button onClick={handleLogout}>
 				Logout
 			</Button>

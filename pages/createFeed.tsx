@@ -1,23 +1,25 @@
 import React, {useEffect, useState} from 'react';
-import Link from 'next/Link';
-import {FeedItem} from '../util/feedItem';
+import Link from 'next/link';
 import storage from '../util/storage';
 import {Navigation} from '../components/navigation';
 import Dialog from '../components/dialog';
 import {Input} from '../components/input';
+import { getFeedItemsFromLocalStorage } from '../util/getFeedItemsFromLocalStorage';
+import { IFeedItem } from '../data/rssFeedSchema';
+import { getRssFeedFromDatabase, setRssFeedIntoDatabase } from '../util/databaseConnector';
 
-const generateFeedItem: () => FeedItem = () => ({
+const generateFeedItem: () => IFeedItem = () => ({
+  id: "",
   edit: false,
   status: true,
   includeAll: false,
   keywords: '',
   url: '',
-  id: new Date().getTime(),
   icon: '/Twitter.png'
 });
 
 export default function CreateFeed(): React.ReactElement {
-  const [feedItem, setFeedItem] = useState<FeedItem>(generateFeedItem());
+  const [feedItem, setFeedItem] = useState<IFeedItem>(generateFeedItem());
   const patchFeedItem = (key: string, value: any) => {
     setFeedItem(feedItem => ({...feedItem, [key]: value}));
   };
@@ -28,13 +30,22 @@ export default function CreateFeed(): React.ReactElement {
     storage.setItem("feedItems", feedItems.map(item => ({...item, edit: false})));
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
+    console.log(await getRssFeedFromDatabase(feedItem.id));
+    if (await getRssFeedFromDatabase(feedItem.id)) {
+        // Update
+    } else {
+      const newFeedItems = generateFeedItem();
+      console.log(newFeedItems);
+      //setRssFeedIntoDatabase(newFeedItems);
+    }
+     /* 
     const feedItems = storage.getItem('feedItems') ?? [];
     const newFeedItems = [...feedItems.filter(item => item.id !== feedItem.id), {...feedItem, edit: false}];
     storage.setItem('feedItems', newFeedItems);
-    setFeedItem(generateFeedItem());
+    setFeedItem(generateFeedItem()); */
 
     alert('Saved succesfully!');
   };

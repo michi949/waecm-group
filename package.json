@@ -13,6 +13,8 @@
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "@fortawesome/react-fontawesome": "^0.1.14",
     "@tailwindcss/forms": "^0.3.2",
+    "@types/twitter": "^1.7.0",
+    "@types/xml2js": "^0.4.8",
     "idtoken-verifier": "^2.1.0",
     "mongodb": "^3.6.5",
     "mongoose": "^5.12.7",
@@ -20,7 +22,9 @@
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "sass": "^1.32.8",
-    "uuid": "^8.3.2"
+    "twitter": "^1.7.1",
+    "uuid": "^8.3.2",
+    "xml2js": "^0.4.23"
   },
   "devDependencies": {
     "@tailwindcss/custom-forms": "^0.2.1",

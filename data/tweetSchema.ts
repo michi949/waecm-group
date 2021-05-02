@@ -1,7 +1,18 @@
 import { ObjectID } from 'bson';
-import { Schema } from 'mongoose';
+import mongoose from 'mongoose';
+var Schema = mongoose.Schema;
+import { IFeedItem } from './rssFeedSchema';
 
-export const Tweet = new Schema({
+export interface ITweetItem {
+    id: string,
+    appId: string,
+    title: string,
+    url: string,
+    rssFeed: IFeedItem,
+    date: Date
+}
+
+ const tweet = new Schema({
     id: ObjectID,
     apiId: String,
     title: String,
@@ -9,3 +20,6 @@ export const Tweet = new Schema({
     rssFeed: {type: Schema.Types.ObjectId, ref: "RssFeed" },
     date: { type: Date, default: Date.now },
 });
+
+var Tweet = mongoose.model('Tweet', tweet);
+export default Tweet;
