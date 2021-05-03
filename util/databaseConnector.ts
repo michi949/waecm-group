@@ -5,7 +5,6 @@ import Tweet from "../data/tweetSchema";
 import User from "../data/userCredentialsShema";
 import globals from "./globals";
 
-
 async function connectDB() {
     if ( mongoose.connection.readyState === 1) {
         console.log("Is connected");
@@ -54,12 +53,14 @@ export async function setTweetIntoDatabase(object: { id: string, title: string, 
 
 //#region RssFeed
 export async function setRssFeedIntoDatabase(object: { url: string, keyword: string, includedAll: boolean, icon: string, status: boolean, edit: boolean }) {
+    console.log("Lol");
     connectDB();
     const m = new RssFeed(object);
     m.save(); 
 }
 
 export async function getRssFeedFromDatabase(id: string) {
+    console.log("Lol");
     connectDB();
     return RssFeed.findOne({ id: id }).exec();
 }
