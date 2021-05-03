@@ -1,6 +1,6 @@
 import { ObjectID } from 'bson';
 import mongoose from 'mongoose';
-var Schema = mongoose.Schema;
+
 
 export interface IFeedItem{
     id: string,
@@ -12,7 +12,7 @@ export interface IFeedItem{
     edit: boolean
 }
 
-const rssFeed = new Schema({
+const RssFeed = new mongoose.Schema({
     id: ObjectID,
     url: String,
     keywords: String,
@@ -23,5 +23,4 @@ const rssFeed = new Schema({
 });
 
 
-var RssFeed = mongoose.model('RssFeed', rssFeed);
-export default RssFeed;
+export default mongoose.models.RssFeed || mongoose.model('RssFeed', RssFeed);
