@@ -1,23 +1,25 @@
 import React, {useEffect, useState} from 'react';
 import Link from 'next/link';
-import {FeedItem} from '../util/feedItem';
 import storage from '../util/storage';
 import {Navigation} from '../components/navigation';
 import Dialog from '../components/dialog';
 import {Input} from '../components/input';
+import { IFeedItem } from '../data/rssFeedSchema';
+import globals from '../util/globals';
+import { faAward } from '@fortawesome/free-solid-svg-icons';
 
-const generateFeedItem: () => FeedItem = () => ({
+const generateFeedItem: () => IFeedItem = () => ({
   edit: false,
   status: true,
   includeAll: false,
   keywords: '',
   url: '',
-  id: new Date().getTime(),
+  id: '',
   icon: '/Twitter.png'
 });
 
 export default function CreateFeed(): React.ReactElement {
-  const [feedItem, setFeedItem] = useState<FeedItem>(generateFeedItem());
+  const [feedItem, setFeedItem] = useState<IFeedItem>(generateFeedItem());
   const patchFeedItem = (key: string, value: any) => {
     setFeedItem(feedItem => ({...feedItem, [key]: value}));
   };
@@ -28,16 +30,28 @@ export default function CreateFeed(): React.ReactElement {
     storage.setItem("feedItems", feedItems.map(item => ({...item, edit: false})));
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const feedItems = storage.getItem('feedItems') ?? [];
-    const newFeedItems = [...feedItems.filter(item => item.id !== feedItem.id), {...feedItem, edit: false}];
-    storage.setItem('feedItems', newFeedItems);
-    setFeedItem(generateFeedItem());
+
+    const res = await fetch(`${globals.host}/api/rssFeed`, {
+      body: JSON.stringify({
+        feedItem
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      method: 'POST'
+    });
+
+    const result = await res.json(); 
+    console.log(result);
+
+    setFeedItem(generateFeedItem()); 
 
     alert('Saved succesfully!');
   };
+
 
   return (
     <Dialog>

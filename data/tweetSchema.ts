@@ -2,7 +2,7 @@ import { ObjectID } from 'bson';
 import mongoose from 'mongoose';
 import { IFeedItem } from './rssFeedSchema';
 
-export interface ITweetItem {
+export interface ITweetItem  {
     id: string,
     appId: string,
     title: string,

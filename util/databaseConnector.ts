@@ -7,7 +7,6 @@ import globals from "./globals";
 
 async function connectDB() {
     if ( mongoose.connection.readyState === 1) {
-        console.log("Is connected");
         return;
     }
    
@@ -52,16 +51,14 @@ export async function setTweetIntoDatabase(object: { id: string, title: string, 
 //#endregion
 
 //#region RssFeed
-export async function setRssFeedIntoDatabase(object: { url: string, keyword: string, includedAll: boolean, icon: string, status: boolean, edit: boolean }) {
-    console.log("Lol");
+export async function setRssFeedIntoDatabase(object: { url: string, keywords: string, includeAll: boolean, icon: string, status: boolean, edit: boolean }) {
     connectDB();
     const m = new RssFeed(object);
-    m.save(); 
+    return await m.save(); 
 }
 
-export async function getRssFeedFromDatabase(id: string) {
-    console.log("Lol");
+export async function getAllRssFeedFromDatabase() {
     connectDB();
-    return RssFeed.findOne({ id: id }).exec();
+    return await RssFeed.find().exec(); //findOne({ id: id }).exec();
 }
 //#endregion

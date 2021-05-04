@@ -1,7 +1,7 @@
 import { ObjectID } from 'bson';
 import mongoose from 'mongoose';
 
-export interface IFeedItem{
+export interface IFeedItem {
     id: string,
     url: string,
     keywords: string,

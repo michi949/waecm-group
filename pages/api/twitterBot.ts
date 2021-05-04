@@ -16,7 +16,7 @@ export default (req: NextApiRequest, res: NextApiResponse): void => {
 
     const sendTweet = (tweet: string): Promise<any> => {
         return new Promise((res, rej) => {
-            twitterClient.post('statuses/update', {status: tweet}, (error, tweetBody, response) => {
+            twitterClient.post('statuses/update', { status: tweet }, (error, tweetBody, response) => {
                 if (!error) {
                     res(tweetBody);
                 } else {
