@@ -6,28 +6,54 @@ import {faPen, faTrash} from '@fortawesome/free-solid-svg-icons';
 import Dialog from '../components/dialog';
 import {Navigation} from '../components/navigation';
 import storage from '../util/storage';
+import globals from '../util/globals';
+import { IFeedItem } from '../data/rssFeedSchema';
 
 export default function ManageFeed(): React.ReactElement {
   const [feedItems, setFeedItems] = useState([]);
   const router = useRouter();
 
   useEffect(() => {
-    setFeedItems(storage.getItem("feedItems"));
+    fetch(`${globals.host}/api/rssFeed`, {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      method: 'GET'
+		})
+		.then((x) => x.json())
+		.then((res) => {
+        const rssFeeds: IFeedItem[] = res;
+				console.log(rssFeeds);
+        setFeedItems(rssFeeds);
+			});
+
   }, []);
+
   useEffect(() => {
     storage.setItem("feedItems", feedItems);
   }, [feedItems]);
 
-  const deleteFeedItem = (id) => {
+  const deleteFeedItem = async (_id) => {
     if (window.confirm('Are you sure you wish to delete this item?')) {
-      const updatedFeedItems = [...feedItems].filter(
-        (feedItem) => feedItem.id !== id
-      );
-      setFeedItems(updatedFeedItems);
+
+      const res = await fetch(`${globals.host}/api/rssFeed?_id=${_id}`, {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        method: 'DELETE'
+      }).then((x) => x.json())
+			.then((res) => {
+        console.log("Penis");
+        const updatedFeedItems = [...feedItems].filter(
+          (feedItem) => feedItem._id !== _id
+        );
+        setFeedItems(updatedFeedItems); 
+			});
     }
   };
-  const editFeedItem = (id) => {
-    feedItems.find(item => item.id === id).edit = true;
+
+  const editFeedItem = (_id) => {
+    feedItems.find(item => item._id === _id).edit = true;
     router.push('/createFeed');
     storage.setItem("feedItems", feedItems);
   };
@@ -51,10 +77,10 @@ export default function ManageFeed(): React.ReactElement {
   );
 }
 
-function FeedItem(feedItem, editFeedItem: (id) => void, deleteFeedItem: (id) => void) {
+function FeedItem(feedItem, editFeedItem: (_id) => void, deleteFeedItem: (_id) => void) {
   return <div
     className="flex flex-row items-center w-full my-2 border-b"
-    key={feedItem.id}
+    key={feedItem._id}
   >
     <img className="max-w-8 max-h-8 mx-2" src={feedItem.icon}/>
     <div className={`${!feedItem.status ? 'text-gray-400 font-light' : ''} w-full truncate`}>
@@ -63,12 +89,12 @@ function FeedItem(feedItem, editFeedItem: (id) => void, deleteFeedItem: (id) => 
     <FontAwesomeIcon
       className="mx-2 cursor-pointer"
       icon={faPen}
-      onClick={() => editFeedItem(feedItem.id)}
+      onClick={() => editFeedItem(feedItem._id)}
     />
     <FontAwesomeIcon
       className="mx-2 cursor-pointer"
       icon={faTrash}
-      onClick={() => deleteFeedItem(feedItem.id)}
+      onClick={() => deleteFeedItem(feedItem._id)}
     />
   </div>;
 }

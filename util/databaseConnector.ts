@@ -51,7 +51,7 @@ export async function setTweetIntoDatabase(object: { id: string, title: string, 
 //#endregion
 
 //#region RssFeed
-export async function setRssFeedIntoDatabase(object: { url: string, keywords: string, includeAll: boolean, icon: string, status: boolean, edit: boolean }) {
+export async function setRssFeedIntoDatabase(object: { url: string, keywords: string, includeAll: boolean, icon: string, status: boolean }) {
     connectDB();
     const m = new RssFeed(object);
     return await m.save(); 
@@ -59,6 +59,16 @@ export async function setRssFeedIntoDatabase(object: { url: string, keywords: st
 
 export async function getAllRssFeedFromDatabase() {
     connectDB();
-    return await RssFeed.find().exec(); //findOne({ id: id }).exec();
+    return await RssFeed.find().exec(); 
+}
+
+export async function deleteRssFeedFromDatabase(_id: string) {
+    connectDB();
+    return await RssFeed.deleteOne({_id: _id}).exec();
+}
+
+export async function updateRssFeedFromDatabase(_id: string, object: { url: string, keywords: string, includeAll: boolean, icon: string, status: boolean }) {
+    connectDB();
+    return await RssFeed.updateOne({_id: _id}, object).exec();
 }
 //#endregion

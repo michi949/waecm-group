@@ -14,7 +14,7 @@ const generateFeedItem: () => IFeedItem = () => ({
   includeAll: false,
   keywords: '',
   url: '',
-  id: '',
+  _id: '',
   icon: '/Twitter.png'
 });
 
@@ -33,6 +33,7 @@ export default function CreateFeed(): React.ReactElement {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!feedItem.edit) {
 
     const res = await fetch(`${globals.host}/api/rssFeed`, {
       body: JSON.stringify({
@@ -42,14 +43,34 @@ export default function CreateFeed(): React.ReactElement {
         'Content-Type': 'application/json'
       },
       method: 'POST'
-    });
+    }).then(response => {
+      if (!response.ok) { throw response }
+      return response.json() 
+    })
+		.then((res) => {
+          setFeedItem(generateFeedItem()); 
+          alert('Saved succesfully!');
+			}).catch( err => {
+        alert("To many Feeds are created!");
+      });
 
-    const result = await res.json(); 
-    console.log(result);
+    } else {
 
-    setFeedItem(generateFeedItem()); 
-
-    alert('Saved succesfully!');
+      fetch(`${globals.host}/api/rssFeed?_id=${feedItem._id}`, {
+        body: JSON.stringify({
+          feedItem
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        method: 'PUT'
+      })
+      .then((x) => x.json())
+      .then((res) => {
+        setFeedItem(generateFeedItem()); 
+        alert('Updated succesfully!');
+      });
+    }
   };
 
 
