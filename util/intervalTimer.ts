@@ -1,3 +1,5 @@
+import { peformTwitterBot } from "./twitterBot";
+
 let interval;
 
 function triggerTimer() {
@@ -8,8 +10,8 @@ function triggerTimer() {
     } 
 
     interval = setInterval(async () => {
-       
-    }, 60000);
+        peformTwitterBot();
+    }, 120000);
 
     return;
 }

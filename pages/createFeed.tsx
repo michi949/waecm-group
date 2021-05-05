@@ -11,7 +11,7 @@ const generateFeedItem: () => IFeedItem = () => ({
   edit: false,
   status: true,
   includeAll: false,
-  keywords: '',
+  keywords: "",
   url: '',
   _id: '',
   icon: '/Twitter.png'
@@ -33,7 +33,6 @@ export default function CreateFeed(): React.ReactElement {
     e.preventDefault();
 
     if (!feedItem.edit) {
-
     const res = await fetch(`${globals.host}/api/rssFeed`, {
       body: JSON.stringify({
         feedItem
@@ -47,10 +46,14 @@ export default function CreateFeed(): React.ReactElement {
       return response.json() 
     })
 		.then((res) => {
-          setFeedItem(generateFeedItem()); 
-          alert('Saved succesfully!');
+          if (res.error) {
+            alert(res.error);
+          } else {
+            setFeedItem(generateFeedItem()); 
+            alert('Saved succesfully!');
+          }
 			}).catch( err => {
-        alert("To many Feeds are created!");
+        alert("Error in Request");
       });
 
     } else {
@@ -66,8 +69,12 @@ export default function CreateFeed(): React.ReactElement {
       })
       .then((x) => x.json())
       .then((res) => {
-        setFeedItem(generateFeedItem()); 
-        alert('Updated succesfully!');
+        if (res.error) {
+          alert(res.error);
+        } else {
+          setFeedItem(generateFeedItem()); 
+          alert('Updated succesfully!');
+        }
       });
     }
   };

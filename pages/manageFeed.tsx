@@ -43,7 +43,6 @@ export default function ManageFeed(): React.ReactElement {
         method: 'DELETE'
       }).then((x) => x.json())
 			.then((res) => {
-        console.log("Penis");
         const updatedFeedItems = [...feedItems].filter(
           (feedItem) => feedItem._id !== _id
         );

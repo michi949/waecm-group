@@ -31,15 +31,22 @@ const handlePostRequest = (req: NextApiRequest, res: NextApiResponse): NextApiRe
     const val = req.body;
     const feedItem: IFeedItem = val.feedItem;
 
+    if(feedItem.keywords.split(",").length >= 3){
+        res.status(200).json({error: "To many Keywords"});
+        return res;
+    }
+
     const rssFeeds = getAllRssFeedFromDatabase();
     rssFeeds.then( a => {
       if(a.length >= 3){
-        res.status(400).json({error: "To manny Feeds"});
+        res.status(200).json({error: "To manny Feeds"});
         return res;
       } else {
+        console.log(feedItem.keywords);
+    
         const result = setRssFeedIntoDatabase({url: feedItem.url, keywords: feedItem.keywords, includeAll: feedItem.includeAll, icon: feedItem.icon, status: feedItem.status });
         result.then( a => {
-            res.status(200).json(a);
+          res.status(200).json(a);
         });
       }
     });
@@ -63,6 +70,11 @@ const handleUpdateRequest = (req: NextApiRequest, res: NextApiResponse): NextApi
     const _id = req.query._id ?? '';
     const val = req.body;
     const feedItem: IFeedItem = val.feedItem;
+
+    if(feedItem.keywords.split(",").length >= 3){
+        res.status(200).json({error: "To many Keywords"});
+        return res;
+    }
 
     const result = updateRssFeedFromDatabase(_id.toString(), { url: feedItem.url, keywords: feedItem.keywords, includeAll: feedItem.includeAll, icon: feedItem.icon, status: feedItem.status });
     result.then( a => {
