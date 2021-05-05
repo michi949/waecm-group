@@ -4,18 +4,18 @@ import { IFeedItem } from './rssFeedSchema';
 
 export interface ITweetItem  {
     _id: string,
-    appId: string,
     title: string,
+    icon: string,
+    text: string
     url: string,
-    rssFeed: IFeedItem,
     date: Date
 }
 
  const Tweet = new mongoose.Schema({
-    apiId: String,
     title: String,
+    icon: String,
+    text: String,
     url: String,
-    rssFeed: {type: mongoose.Schema.Types.ObjectId, ref: "RssFeed" },
     date: { type: Date, default: Date.now },
 });
 

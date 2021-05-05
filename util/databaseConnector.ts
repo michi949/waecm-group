@@ -41,11 +41,25 @@ export async function updateUserInDatabase(sub: string, object: {lastLogin: Date
 //#endregion
 
 //#region Tweet
-
 export async function setTweetIntoDatabase(object: { id: string, title: string, url: string, rssFeed: ObjectID }) {
     connectDB();
     const m = new Tweet(object);
-    m.save(); 
+    return await m.save(); 
+}
+
+export async function findTweetByUrlInDatabase(url: string) {
+    connectDB();
+    return await Tweet.findOne({url: url}).exec();
+}
+
+export async function getAllTeweetsFromDatabase() {
+    connectDB();
+    return await Tweet.find().exec();
+}
+
+export async function findFromToTeweetsFromDatabase(skip: number, limit: number = 6) {
+    connectDB();
+    return await Tweet.find().limit(limit).skip(skip).exec();
 }
 
 //#endregion

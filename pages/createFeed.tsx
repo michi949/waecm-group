@@ -6,7 +6,6 @@ import Dialog from '../components/dialog';
 import {Input} from '../components/input';
 import { IFeedItem } from '../data/rssFeedSchema';
 import globals from '../util/globals';
-import { faAward } from '@fortawesome/free-solid-svg-icons';
 
 const generateFeedItem: () => IFeedItem = () => ({
   edit: false,
