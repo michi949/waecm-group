@@ -33,7 +33,7 @@ const checkFeedForKeyWords = (feeds: IFeedItem[]) => {
             const keywords = rssFeed.keywords.split(",");
             return Promise.all(result["rdf:RDF"].item.map(async element => {
         
-                if (searchFieldForKeyword(element.title[0], keywords) || searchFieldForKeyword(element["dc:subject"][0], keywords)) {
+                if (searchFieldForKeyword(element.title[0], element["dc:subject"][0], keywords, rssFeed.includeAll)) {
                     checkInDatabaseForDouble(element, rssFeed.icon);
                 }
 
@@ -44,10 +44,24 @@ const checkFeedForKeyWords = (feeds: IFeedItem[]) => {
     });
 }
 
+const searchFieldForKeyword = (title: string, subject: string, keywords: string[], includeAll: boolean): boolean => {
+    if(includeAll) {
+        let hasAll = true;
+        keywords.forEach(keyword => {
+            if (!title.toLowerCase().includes(keyword.toLowerCase()) && !keywords.map(keyword => subject.toLowerCase().includes(keyword.toLowerCase()))) {
+                hasAll = false;
+            }
+        });
+        return hasAll;
+    } else {
+        return keywords.map(keyword => title.toLowerCase().includes(keyword.toLowerCase())).some(predicate => predicate) || keywords.map(keyword => subject.toLowerCase().includes(keyword.toLowerCase())).some(predicate => predicate);
+    }
+};    
 
+/*
 const searchFieldForKeyword = (field: string, keywords: string[]): boolean => {
     return keywords.map(keyword => field.toLowerCase().includes(keyword.toLowerCase())).some(predicate => predicate);
-};    
+};   */
 
 const sendTweet = (tweet: string): Promise<any> => {
     return new Promise((res, rej) => {
