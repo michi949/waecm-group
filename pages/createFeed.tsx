@@ -94,7 +94,7 @@ export default function CreateFeed(): React.ReactElement {
             placeholder="https://rss.orf.at/news.xml"
           />
           <Input
-            label="RSS - Feed Keywords:"
+            label="RSS - Feed Keywords: (look for Whitspace!)"
             type="text"
             onChange={(e) => patchFeedItem('keywords', e.target.value)}
             value={feedItem.keywords}

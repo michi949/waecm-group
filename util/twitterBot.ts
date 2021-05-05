@@ -4,6 +4,7 @@ import { parseStringPromise } from 'xml2js';
 import { IFeedItem } from "../data/rssFeedSchema";
 import { findTweetByUrlInDatabase, getAllRssFeedFromDatabase, setTweetIntoDatabase } from "./databaseConnector";
 
+let sendAble = true;
 
 const twitterClient = new Twitter({
     consumer_key: getEnvironmentVariable("TWITTER_API_KEY"),
@@ -13,11 +14,13 @@ const twitterClient = new Twitter({
 });
 
 export function peformTwitterBot() {
+    sendAble = true;
     getAllRssFeedFromDatabase().then((a: IFeedItem[]) => {
         if (a.length === 0) {
             console.log("No feeds in List!");
         }
 
+        console.log("Triggerd");
         checkFeedForKeyWords(a);
     });
 }
@@ -34,7 +37,7 @@ const checkFeedForKeyWords = (feeds: IFeedItem[]) => {
             return Promise.all(result["rdf:RDF"].item.map(async element => {
         
                 if (searchFieldForKeyword(element.title[0], element["dc:subject"][0], keywords, rssFeed.includeAll)) {
-                    checkInDatabaseForDouble(element, rssFeed.icon);
+                    checkInDatabaseForDoubleAndSet(element, rssFeed.icon);
                 }
 
                 return Promise.resolve();
@@ -46,22 +49,16 @@ const checkFeedForKeyWords = (feeds: IFeedItem[]) => {
 
 const searchFieldForKeyword = (title: string, subject: string, keywords: string[], includeAll: boolean): boolean => {
     if(includeAll) {
-        let hasAll = true;
+        const val: boolean[] = [];
         keywords.forEach(keyword => {
-            if (!title.toLowerCase().includes(keyword.toLowerCase()) && !keywords.map(keyword => subject.toLowerCase().includes(keyword.toLowerCase()))) {
-                hasAll = false;
-            }
+            val.push(title.toLowerCase().includes(keyword.toLowerCase()) || subject.toLowerCase().includes(keyword.toLowerCase()));
         });
-        return hasAll;
+        return val.every(a => a === true);
     } else {
         return keywords.map(keyword => title.toLowerCase().includes(keyword.toLowerCase())).some(predicate => predicate) || keywords.map(keyword => subject.toLowerCase().includes(keyword.toLowerCase())).some(predicate => predicate);
     }
 };    
 
-/*
-const searchFieldForKeyword = (field: string, keywords: string[]): boolean => {
-    return keywords.map(keyword => field.toLowerCase().includes(keyword.toLowerCase())).some(predicate => predicate);
-};   */
 
 const sendTweet = (tweet: string): Promise<any> => {
     return new Promise((res, rej) => {
@@ -75,16 +72,31 @@ const sendTweet = (tweet: string): Promise<any> => {
     });
 };    
 
-const checkInDatabaseForDouble = (element, icon) => {
+const checkInDatabaseForDoubleAndSet = (element, icon) => {
 
     const title = element.title[0] ?? "Not Found";
     const link = element.link[0] ?? "Not Found";
 
     findTweetByUrlInDatabase(link).then((a) => {
         if(!a) {
-            setTweetIntoDatabase({title: title, url: link, icon: icon}).then((b) => {
-              const result = sendTweet(`${title}: ${link}`);
-            });
+            if(sendAble) {
+                sendAble = false;
+                const result = sendTweet(`${title}: ${link}`);
+                result.then(a => {
+                    setTweetIntoDatabase({title: title, url: link, icon: icon}).then((b) => {
+                        console.log(b);
+                    });
+                }).catch(err => {
+                    if(err[0].code === 187) {
+                        setTweetIntoDatabase({title: title, url: link, icon: icon}).then((b) => {
+                            console.log(b);
+                        });
+                        console.log("Saved Duplicated Tweet");
+                    } else {
+                        sendAble = true;
+                    }
+                });
+            }
         } else {
             console.log("Already Saved!");
         }

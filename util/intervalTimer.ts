@@ -1,17 +1,19 @@
+import globals from "./globals";
 import { peformTwitterBot } from "./twitterBot";
 
-let interval;
 
 function triggerTimer() {
 
-    if (interval) {
+    if (globals.timmerRunning) {
         console.log("Timer allready started");
         return;
     } 
 
-    interval = setInterval(async () => {
+    globals.timmerRunning = true;
+    console.log("Timer Started");
+    setInterval(async () => {
         peformTwitterBot();
-    }, 120000);
+    }, 78000);
 
     return;
 }
