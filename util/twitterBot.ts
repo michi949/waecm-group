@@ -20,7 +20,6 @@ export function peformTwitterBot() {
             console.log("No feeds in List!");
         }
 
-        console.log("Triggerd");
         checkFeedForKeyWords(a);
     });
 }

@@ -41,9 +41,6 @@ export default function Dashboard(): React.ReactElement {
 			<Title>Login was successful</Title>
 			<img alt="hotboy" src={userInfo?.picture ?? './twitter.jpg'}/>
 			<p>{userInfo?.name ?? 'No Name'}</p>
-			<Button onClick={navigateToTweetPage}>
-				Navigate to Tweets
-			</Button>
 			<Button onClick={handleLogout}>
 				Logout
 			</Button>
