@@ -43,7 +43,7 @@ export default function Feed(): React.ReactElement {
 				{tweetItems.length !== 0 ? 
 				<div className="h-32 w-full text-center p-4">
 					<Button onClick={() => loadNextTweetItems()}>
-						<div className="text-blue-500 underline">Load More</div>
+						<div className="bg-gray-200 text-black font-bold rounded-3xl">Load More</div>
 					</Button>
 				</div> 
 				: null }
@@ -57,10 +57,10 @@ function TweetItem(tweetItem: ITweetItem) {
 	  className="flex flex-row items-center w-full my-2 border-b"
 	  key={tweetItem._id}>
 	 <img className="max-w-8 max-h-8 mx-2" src={tweetItem.icon}/>
-    	<div className={`w-full truncate`}>
-      		{tweetItem.text}
+    	<div className="w-full truncate">
+      		{tweetItem.title}
     	</div>
-		<div className={`w-full truncate`}>
+		<div className="w-full truncate">
       		{tweetItem.url}
     	</div>
 	</div>;

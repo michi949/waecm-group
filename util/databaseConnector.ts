@@ -41,7 +41,7 @@ export async function updateUserInDatabase(sub: string, object: {lastLogin: Date
 //#endregion
 
 //#region Tweet
-export async function setTweetIntoDatabase(object: { id: string, title: string, url: string, rssFeed: ObjectID }) {
+export async function setTweetIntoDatabase(object: { title: string, url: string, icon: string }) {
     connectDB();
     const m = new Tweet(object);
     return await m.save(); 

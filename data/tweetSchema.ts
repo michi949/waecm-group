@@ -6,7 +6,6 @@ export interface ITweetItem  {
     _id: string,
     title: string,
     icon: string,
-    text: string
     url: string,
     date: Date
 }

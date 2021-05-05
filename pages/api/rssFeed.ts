@@ -42,8 +42,6 @@ const handlePostRequest = (req: NextApiRequest, res: NextApiResponse): NextApiRe
         res.status(200).json({error: "To manny Feeds"});
         return res;
       } else {
-        console.log(feedItem.keywords);
-    
         const result = setRssFeedIntoDatabase({url: feedItem.url, keywords: feedItem.keywords, includeAll: feedItem.includeAll, icon: feedItem.icon, status: feedItem.status });
         result.then( a => {
           res.status(200).json(a);
