@@ -69,7 +69,7 @@ const checkInDatabaseForDouble = (element, icon) => {
     findTweetByUrlInDatabase(link).then((a) => {
         if(!a) {
             setTweetIntoDatabase({title: title, url: link, icon: icon}).then((b) => {
-              const result = sendTweet(`${element.title[0]}: ${element.link[0]}`);
+              const result = sendTweet(`${title}: ${link}`);
               console.log(result);
             });
         } else {
