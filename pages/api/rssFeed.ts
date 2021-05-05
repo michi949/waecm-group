@@ -1,19 +1,42 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import IdTokenVerifier from 'idtoken-verifier';
 import { IFeedItem } from "../../data/rssFeedSchema";
 import { deleteRssFeedFromDatabase, getAllRssFeedFromDatabase, setRssFeedIntoDatabase, updateRssFeedFromDatabase } from "../../util/databaseConnector";
+import triggerTimer from "../../util/intervalTimer";
+
 
 export default (req: NextApiRequest, res: NextApiResponse): void => {
-    if (req.method === 'POST') {
-        handlePostRequest(req, res);
-      } else if (req.method === "GET") {
-        handleGetRequest(req, res);
-      } else if (req.method === "DELETE") {
-        handleDeleteRequest(req, res);
-      } else if (req.method === "PUT") {
-        handleUpdateRequest(req, res);
-      } else {
-        res.status(400).json({error: 'No valid Request'});
-      }
+    const authorization = req.headers.authorization ?? '';
+	const idTokenMatch = authorization.match(/Bearer (.*)/);
+	const nonce = req.query.nonce;
+
+    const idToken = idTokenMatch[1];
+
+    triggerTimer(); 
+
+	const verifier = new IdTokenVerifier({
+		issuer: 'https://waecm-sso.inso.tuwien.ac.at/auth/realms/waecm',
+		audience: 'waecm',
+		jwksURI: 'https://waecm-sso.inso.tuwien.ac.at/auth/realms/waecm/protocol/openid-connect/certs',
+	});
+      
+	verifier.verify(idToken, nonce, async (error, userInfo) => {
+		if (error) {
+			res.status(401).json({ tokenValid: false });
+		} else {
+            if (req.method === 'POST') {
+                handlePostRequest(req, res);
+              } else if (req.method === "GET") {
+                handleGetRequest(req, res);
+              } else if (req.method === "DELETE") {
+                handleDeleteRequest(req, res);
+              } else if (req.method === "PUT") {
+                handleUpdateRequest(req, res);
+              } else {
+                res.status(400).json({error: 'No valid Request'});
+              }
+		}
+	});
 }
 
 const handleGetRequest = (req: NextApiRequest, res: NextApiResponse): NextApiResponse => {
@@ -31,7 +54,7 @@ const handlePostRequest = (req: NextApiRequest, res: NextApiResponse): NextApiRe
     const val = req.body;
     const feedItem: IFeedItem = val.feedItem;
 
-    if(feedItem.keywords.split(",").length >= 3){
+    if(feedItem.keywords.split(",").length > 3){
         res.status(200).json({error: "To many Keywords"});
         return res;
     }
@@ -69,7 +92,7 @@ const handleUpdateRequest = (req: NextApiRequest, res: NextApiResponse): NextApi
     const val = req.body;
     const feedItem: IFeedItem = val.feedItem;
 
-    if(feedItem.keywords.split(",").length >= 3){
+    if(feedItem.keywords.split(",").length > 3){
         res.status(200).json({error: "To many Keywords"});
         return res;
     }

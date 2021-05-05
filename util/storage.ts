@@ -1,6 +1,7 @@
 export interface Storage {
-  nonce: string,
-	feedItems: any[]
+  	nonce: string,
+	token: string,
+	feedItems: any[],
 }
 
 function getItem(key: keyof Storage){

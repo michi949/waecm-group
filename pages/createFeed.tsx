@@ -6,6 +6,8 @@ import Dialog from '../components/dialog';
 import {Input} from '../components/input';
 import { IFeedItem } from '../data/rssFeedSchema';
 import globals from '../util/globals';
+import { useRouter } from 'next/router';
+import { checkLoginState, logout } from '../util/tokenManagment';
 
 const generateFeedItem: () => IFeedItem = () => ({
   edit: false,
@@ -19,29 +21,41 @@ const generateFeedItem: () => IFeedItem = () => ({
 
 export default function CreateFeed(): React.ReactElement {
   const [feedItem, setFeedItem] = useState<IFeedItem>(generateFeedItem());
+  const router = useRouter();
+
   const patchFeedItem = (key: string, value: any) => {
     setFeedItem(feedItem => ({...feedItem, [key]: value}));
   };
 
   useEffect(() => {
+    checkLogin();
     const feedItems = storage.getItem('feedItems') ?? [];
     setFeedItem(feedItems.find(item => item.edit) ?? generateFeedItem());
     storage.setItem("feedItems", feedItems.map(item => ({...item, edit: false})));
   }, []);
 
+  const checkLogin = () => {
+    if(!checkLoginState()) {
+			router.push('/')
+		}
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!feedItem.edit) {
-    const res = await fetch(`${globals.host}/api/rssFeed`, {
+    
+    await fetch(`${globals.host}/api/rssFeed?nonce=${storage.getItem("nonce")}`, {
       body: JSON.stringify({
         feedItem
       }),
       headers: {
+        Authorization: `Bearer ${storage.getItem("token")}`,
         'Content-Type': 'application/json'
       },
       method: 'POST'
     }).then(response => {
+      console.log(response);
       if (!response.ok) { throw response }
       return response.json() 
     })
@@ -53,21 +67,28 @@ export default function CreateFeed(): React.ReactElement {
             alert('Saved succesfully!');
           }
 			}).catch( err => {
-        alert("Error in Request");
+        if(err.status === 401) {
+					logout();
+				}
       });
 
     } else {
 
-      fetch(`${globals.host}/api/rssFeed?_id=${feedItem._id}`, {
+      fetch(`${globals.host}/api/rssFeed?nonce=${storage.getItem("nonce")}&_id=${feedItem._id}`, {
         body: JSON.stringify({
           feedItem
         }),
         headers: {
+          Authorization: `Bearer ${storage.getItem("token")}`,
           'Content-Type': 'application/json'
         },
         method: 'PUT'
       })
-      .then((x) => x.json())
+      .then(response => {
+        console.log(response);
+        if (!response.ok) { throw response }
+        return response.json() 
+      })
       .then((res) => {
         if (res.error) {
           alert(res.error);
@@ -75,7 +96,11 @@ export default function CreateFeed(): React.ReactElement {
           setFeedItem(generateFeedItem()); 
           alert('Updated succesfully!');
         }
-      });
+      }).catch((err) => {
+				if(err.status === 401) {
+					logout();
+				}
+			});
     }
   };
 

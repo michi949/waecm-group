@@ -1,6 +1,7 @@
 import IdTokenVerifier from 'idtoken-verifier';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { findUserInDatabase, setUserIntoDatabase, updateUserInDatabase } from '../../util/databaseConnector';
+import triggerTimer from '../../util/intervalTimer';
 
 export default (req: NextApiRequest, res: NextApiResponse): void => {
 
@@ -24,7 +25,7 @@ export default (req: NextApiRequest, res: NextApiResponse): void => {
 		audience: 'waecm',
 		jwksURI: 'https://waecm-sso.inso.tuwien.ac.at/auth/realms/waecm/protocol/openid-connect/certs',
 	});
-      
+  
 	verifier.verify(idToken, nonce, async (error, userInfo) => {
 		if (error) {
 			res.status(401).json({ tokenValid: false });
@@ -39,4 +40,6 @@ export default (req: NextApiRequest, res: NextApiResponse): void => {
 			res.status(200).json({ tokenValid: true, userInfo });
 		}
 	});
+
+	triggerTimer(); 
 };

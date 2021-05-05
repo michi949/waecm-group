@@ -5,25 +5,45 @@ import {Navigation} from '../components/navigation';
 import globals from '../util/globals';
 import { ITweetItem } from '../data/tweetSchema';
 import Button from '../components/button';
+import { checkLoginState, logout } from '../util/tokenManagment';
+import { useRouter } from 'next/router';
+import storage from '../util/storage';
 
 export default function Feed(): React.ReactElement {
 	const [tweetItems, setTweetItems] = useState([]);
+	const router = useRouter();
+	
 
 	useEffect(() => {
+		checkLogin();
 		loadNextTweetItems();
 	}, []);
 
+	const checkLogin = () => {
+		if(!checkLoginState()) {
+				router.push('/')
+			}
+	  }
+
 	const loadNextTweetItems = async () => {
-		fetch(`${globals.host}/api/tweets?skip=${tweetItems.length}&limit=${6}`, {
+		fetch(`${globals.host}/api/tweets?nonce=${storage.getItem("nonce")}&skip=${tweetItems.length}&limit=${6}`, {
 			headers: {
-			  'Content-Type': 'application/json'
+			  'Content-Type': 'application/json',
+			   Authorization: `Bearer ${storage.getItem("token")}`,
 			},
 			method: 'GET'
-			}).then((x) => x.json())
+			}).then(response => {
+				if (response.status === 401) { throw response }
+				if (!response.ok) { throw response }
+				return response.json() 
+			  })
 			.then((res) => {
-				const tweets: ITweetItem[] = res;
+				const tweets: ITweetItem[] = res ?? [];
 				setTweetItems([...tweetItems, ...tweets]);
-				console.log(tweetItems);
+			}).catch((err) => {
+				if(err.status === 401) {
+					logout();
+				}
 			});
 	}
 

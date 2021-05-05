@@ -1,13 +1,24 @@
 import Head from 'next/head';
-import React from 'react';
+import React, { useEffect } from 'react';
 import {v4 as uuidv4} from 'uuid';
 import Dialog from '../components/dialog';
 import Title from '../components/title';
 import Button from '../components/button';
 import storage from '../util/storage';
 import globals from '../util/globals';
+import { checkLoginState } from '../util/tokenManagment';
+import { route } from 'next/dist/next-server/server/router';
+import { useRouter } from 'next/router';
 
 export default function Home(): React.ReactElement {
+	const router = useRouter();
+
+	useEffect(() => {
+		if(checkLoginState()) {
+			router.push('/feed')
+		}
+	  }, []);
+
 	const handleLogin = () => {
 		const nonce = uuidv4();
 		storage.setItem('nonce', nonce);

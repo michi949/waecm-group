@@ -8,15 +8,22 @@ import {Navigation} from '../components/navigation';
 import storage from '../util/storage';
 import globals from '../util/globals';
 import { IFeedItem } from '../data/rssFeedSchema';
+import { checkLoginState, logout } from '../util/tokenManagment';
+import Button from '../components/button';
 
 export default function ManageFeed(): React.ReactElement {
   const [feedItems, setFeedItems] = useState([]);
   const router = useRouter();
+ 
 
   useEffect(() => {
-    fetch(`${globals.host}/api/rssFeed`, {
+    checkLogin();
+
+
+    fetch(`${globals.host}/api/rssFeed?nonce=${storage.getItem("nonce")}`, {
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${storage.getItem("token")}`,
       },
       method: 'GET'
 		})
@@ -25,6 +32,10 @@ export default function ManageFeed(): React.ReactElement {
         const rssFeeds: IFeedItem[] = res;
 				console.log(rssFeeds);
         setFeedItems(rssFeeds);
+			}).catch((err) => {
+        if(err.status === 401) {
+					logout();
+				}
 			});
 
   }, []);
@@ -33,23 +44,42 @@ export default function ManageFeed(): React.ReactElement {
     storage.setItem("feedItems", feedItems);
   }, [feedItems]);
 
+  const checkLogin = () => {
+		if(!checkLoginState()) {
+				router.push('/')
+			}
+	  }
+
   const deleteFeedItem = async (_id) => {
     if (window.confirm('Are you sure you wish to delete this item?')) {
 
-      const res = await fetch(`${globals.host}/api/rssFeed?_id=${_id}`, {
+      const res = await fetch(`${globals.host}/api/rssFeed?nonce=${storage.getItem("nonce")}&_id=${_id}`, {
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+           Authorization: `Bearer ${storage.getItem("token")}`,
         },
         method: 'DELETE'
-      }).then((x) => x.json())
+      }).then(response => {
+        console.log(response);
+        if (!response.ok) { throw response }
+        return response.json() 
+      })
 			.then((res) => {
         const updatedFeedItems = [...feedItems].filter(
           (feedItem) => feedItem._id !== _id
         );
         setFeedItems(updatedFeedItems); 
-			});
+			}).catch((err) => {
+        if(err.status === 401) {
+					logout();
+				}
+      });
     }
   };
+
+  const handleLogout = () => {
+		logout();
+	};
 
   const editFeedItem = (_id) => {
     feedItems.find(item => item._id === _id).edit = true;
@@ -71,6 +101,10 @@ export default function ManageFeed(): React.ReactElement {
             </button>
           </Link>
         ) : null}
+
+      <Button onClick={handleLogout}>
+				Logout
+			</Button>
       </main>
     </Dialog>
   );

@@ -8,6 +8,7 @@ function triggerTimer() {
         return;
     } 
 
+    console.log("Started");
     globals.timmerRunning = true;
     setInterval(async () => {
         peformTwitterBot();
