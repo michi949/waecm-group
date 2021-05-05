@@ -57,7 +57,7 @@ export async function getAllTeweetsFromDatabase() {
     return await Tweet.find().exec();
 }
 
-export async function findFromToTeweetsFromDatabase(skip: number, limit: number = 6) {
+export async function findFromToTweetsFromDatabase(skip: number, limit: number = 6) {
     connectDB();
     return await Tweet.find().limit(limit).skip(skip).exec();
 }

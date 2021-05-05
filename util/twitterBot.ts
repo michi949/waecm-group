@@ -22,8 +22,9 @@ export function peformTwitterBot() {
     });
 }
 
-
 const checkFeedForKeyWords = (feeds: IFeedItem[]) => {
+    feeds = feeds.filter(a => a.status === true);
+
     feeds.forEach(rssFeed => {
         fetch(rssFeed.url)
         .then(raw => raw.text())
@@ -32,7 +33,6 @@ const checkFeedForKeyWords = (feeds: IFeedItem[]) => {
             const keywords = rssFeed.keywords.split(",");
             return Promise.all(result["rdf:RDF"].item.map(async element => {
         
-
                 if (searchFieldForKeyword(element.title[0], keywords) || searchFieldForKeyword(element["dc:subject"][0], keywords)) {
                     checkInDatabaseForDouble(element, rssFeed.icon);
                 }
@@ -70,7 +70,6 @@ const checkInDatabaseForDouble = (element, icon) => {
         if(!a) {
             setTweetIntoDatabase({title: title, url: link, icon: icon}).then((b) => {
               const result = sendTweet(`${title}: ${link}`);
-              console.log(result);
             });
         } else {
             console.log("Already Saved!");
