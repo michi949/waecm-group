@@ -7,6 +7,8 @@ import {Input} from '../components/input';
 import {IFeedItem} from '../data/rssFeedSchema';
 import globals from '../util/globals';
 import {logout, useLoggedIn} from '../util/tokenManagment';
+import {Snackbar} from '@material/react-snackbar';
+import {useSnackbar} from '../util/snackbar';
 
 const generateFeedItem: () => IFeedItem = () => ({
   edit: false,
@@ -20,6 +22,7 @@ const generateFeedItem: () => IFeedItem = () => ({
 
 export default function CreateFeed(): React.ReactElement {
   useLoggedIn();
+  const {addAlert, alerts} = useSnackbar();
   const [feedItem, setFeedItem] = useState<IFeedItem>(generateFeedItem());
 
   const patchFeedItem = (key: keyof IFeedItem, value: any) => {
@@ -53,10 +56,10 @@ export default function CreateFeed(): React.ReactElement {
     })
 		.then((res) => {
           if (res.error) {
-            alert(res.error);
+            addAlert(res.error);
           } else {
-            setFeedItem(generateFeedItem()); 
-            alert('Saved succesfully!');
+            setFeedItem(generateFeedItem());
+            addAlert('Saved succesfully!');
           }
 			}).catch( err => {
         if(err.status === 401) {
@@ -83,10 +86,10 @@ export default function CreateFeed(): React.ReactElement {
       })
       .then((res) => {
         if (res.error) {
-          alert(res.error);
+          addAlert(res.error);
         } else {
-          setFeedItem(generateFeedItem()); 
-          alert('Updated succesfully!');
+          setFeedItem(generateFeedItem());
+          addAlert('Updated succesfully!');
         }
       }).catch((err) => {
 				if(err.status === 401) {
@@ -105,6 +108,7 @@ export default function CreateFeed(): React.ReactElement {
 
   return (
     <Dialog>
+      {alerts}
       <Navigation/>
       <main className="flex flex-col content-start">
         <form onSubmit={handleSubmit}>

@@ -10,7 +10,7 @@ async function connectDB() {
         return;
     }
    
-    const conn = await mongoose.connect(globals.database_path, {
+    await mongoose.connect(globals.database_path, {
       useUnifiedTopology: true,
       useFindAndModify: false,
       useCreateIndex: true,

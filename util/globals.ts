@@ -5,5 +5,5 @@ export default {
   database_path: "mongodb://localhost:27017/waecm2021group3db",
   database_user: "service-user",
   database_password: "itsedev",
-  timmerRunning: false
+  timerRunning: false
 };

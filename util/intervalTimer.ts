@@ -3,18 +3,13 @@ import { performTwitterBot } from "./twitterBot";
 
 
 function triggerTimer() {
-
-    if (globals.timmerRunning) {
+    if (globals.timerRunning) {
         return;
     } 
 
     console.log("Started");
-    globals.timmerRunning = true;
-    setInterval(async () => {
-        performTwitterBot();
-    }, 78000);
-
-    return;
+    globals.timerRunning = true;
+    setInterval(() => performTwitterBot(), 60000);
 }
 
 export default triggerTimer;
