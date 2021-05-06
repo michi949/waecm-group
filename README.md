@@ -18,18 +18,17 @@ After the Docker container has been successfully launched with our image, it is 
 ## Docker
 
 ### Docker Image 
-* [waecm-2021-group-03-bsp-1](https://hub.docker.com/r/waecm2021group03/waecm-2021-group-03-bsp-1)
-
+* [waecm-2021-group-03-bsp-2](https://hub.docker.com/r/waecm2021group03/waecm-2021-group-03-bsp-2)
 
 ```
-sha256:f5b964f8d92cce42ea27bcc57af728bad5da33c50feaac8c6dc179f83c7ecdfc
+sha256:cfb0d451e70b750cc9760f2144f28156a789aa5e93edce22ebe01a6963961e46
 ```
 
 ### Docker Run
-The Docker image requires port 3000, and the following command shows how to run the container.
+In order to start the complete container infrastructure, docker-compose is being used. The docker-compose.yml defines two services, one called web for our web server. It uses our own docker image based on the source code of this repository and the latest version is already built and deployed on dockerhub. The second service, which is defined in the docker-compose.yml, is the database server that uses the official image from mongodb. Running the command below, starts both services and continously prints the logs of those to the console. The application is now reachable under http://localhost:3000/.
 
 ```
-$ docker run -p 3000:3000 waecm2021group03/waecm-2021-group-03-bsp-1
+$ docker-compose up
 ```
 
 ## ESLint 

@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   web:
-   build: .
+   image: waecm2021group03/waecm-2021-group-03-bsp-2:latest
    container_name: waecm2021group3web
    ports: 
     - "3000:3000"
