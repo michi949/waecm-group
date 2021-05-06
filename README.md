@@ -28,8 +28,11 @@ sha256:cfb0d451e70b750cc9760f2144f28156a789aa5e93edce22ebe01a6963961e46
 For confidentiality reasons information like the API keys for twitter are not included in any image or repository. These must be set using environment variables. For that purpose the docker-compose.yml expects a file called .env that lies in the same directory. In there the following environment variables must be set as key-value pairs like so (for further information see https://docs.docker.com/compose/environment-variables/#the-env-file):
 
 TWITTER_API_KEY=XXX
+
 TWITTER_API_SECRET=XXX
+
 TWITTER_ACCESS_TOKEN=XXX
+
 TWITTER_ACCESS_TOKEN_SECRET=XXX
 
 
