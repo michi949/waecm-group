@@ -24,6 +24,15 @@ After the Docker container has been successfully launched with our image, it is 
 sha256:cfb0d451e70b750cc9760f2144f28156a789aa5e93edce22ebe01a6963961e46
 ```
 
+### Environment Variables
+For confidentiality reasons information like the API keys for twitter are not included in any image or repository. These must be set using environment variables. For that purpose the docker-compose.yml expects a file called .env that lies in the same directory. In there the following environment variables must be set as key-value pairs like so (for further information see https://docs.docker.com/compose/environment-variables/#the-env-file):
+
+TWITTER_API_KEY=XXX
+TWITTER_API_SECRET=XXX
+TWITTER_ACCESS_TOKEN=XXX
+TWITTER_ACCESS_TOKEN_SECRET=XXX
+
+
 ### Docker Run
 In order to start the complete container infrastructure, docker-compose is being used. The docker-compose.yml defines two services, one called web for our web server. It uses our own docker image based on the source code of this repository and the latest version is already built and deployed on dockerhub. The second service, which is defined in the docker-compose.yml, is the database server that uses the official image from mongodb. Running the command below, starts both services and continously prints the logs of those to the console. The application is now reachable under http://localhost:3000/.
 
