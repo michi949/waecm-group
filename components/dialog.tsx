@@ -1,9 +1,11 @@
 import React from 'react';
 
 export default function Dialog({children}: { children: React.ReactNode }): JSX.Element {
-  return <div className="grid place-items-center w-screen h-screen">
-    <div className="flex flex-col min-h-5/6 w-80 bg-white p-4 rounded-3xl neomorphism">
-      {children}
+  return <div className="flex flex-col items-center w-screen h-screen overflow-y-auto">
+    <div className="flex flex-col my-8 w-80 bg-white p-4 rounded-3xl neomorphism">
+      <div className="">
+        {children}
+      </div>
     </div>
   </div>;
 }

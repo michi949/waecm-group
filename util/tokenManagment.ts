@@ -1,18 +1,12 @@
-import IdTokenVerifier from 'idtoken-verifier';
 import globals from "./globals";
 import storage from "./storage";
-
-
-export interface IToken {
-	nonce: string,
-	token: string,
-}
+import {useRouter} from 'next/router';
+import {useEffect} from 'react';
 
 export const getToken = (): string => {
 	const urlParams = new URLSearchParams(window.location.href);
 	return urlParams.get('id_token');
 };
-
 
 export const logout = () => {
 	const nonce = storage.getItem('nonce');
@@ -22,8 +16,12 @@ export const logout = () => {
 };
 
 export const checkLoginState = (): boolean => {
-	if(storage.getItem("token") === "" || storage.getItem("nonce") === "") {
-		return false;
-	}
-	return true;
+	return !(storage.getItem("token") === "" || storage.getItem("nonce") === "");
+}
+
+export function useLoggedIn() {
+	const router = useRouter();
+	useEffect(() => {
+		if(!checkLoginState()) router.push("/");
+	}, []);
 }

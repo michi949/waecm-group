@@ -7,84 +7,65 @@ import Dialog from '../components/dialog';
 import {Navigation} from '../components/navigation';
 import storage from '../util/storage';
 import globals from '../util/globals';
-import { IFeedItem } from '../data/rssFeedSchema';
-import { checkLoginState, logout } from '../util/tokenManagment';
+import {IFeedItem} from '../data/rssFeedSchema';
+import {logout, useLoggedIn} from '../util/tokenManagment';
 import Button from '../components/button';
 
 export default function ManageFeed(): React.ReactElement {
+  useLoggedIn();
+
   const [feedItems, setFeedItems] = useState([]);
   const router = useRouter();
- 
 
   useEffect(() => {
-    checkLogin();
-
-
-    fetch(`${globals.host}/api/rssFeed?nonce=${storage.getItem("nonce")}`, {
+    fetch(`${globals.host}/api/rssFeed?nonce=${storage.getItem('nonce')}`, {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${storage.getItem("token")}`,
+        Authorization: `Bearer ${storage.getItem('token')}`,
       },
       method: 'GET'
-		})
-		.then((x) => x.json())
-		.then((res) => {
-        const rssFeeds: IFeedItem[] = res;
-				console.log(rssFeeds);
+    })
+      .then((x) => x.json())
+      .then((rssFeeds: IFeedItem[]) => {
+        console.log(rssFeeds);
         setFeedItems(rssFeeds);
-			}).catch((err) => {
-        if(err.status === 401) {
-					logout();
-				}
-			});
+      }).catch((err) => {
+      if (err.status === 401) {
+        logout();
+      }
+    });
 
   }, []);
 
+  // TODO CHECK IF NECESSARY
   useEffect(() => {
-    storage.setItem("feedItems", feedItems);
+    storage.setItem('feedItems', feedItems);
   }, [feedItems]);
-
-  const checkLogin = () => {
-		if(!checkLoginState()) {
-				router.push('/')
-			}
-	  }
 
   const deleteFeedItem = async (_id) => {
     if (window.confirm('Are you sure you wish to delete this item?')) {
 
-      const res = await fetch(`${globals.host}/api/rssFeed?nonce=${storage.getItem("nonce")}&_id=${_id}`, {
+      fetch(`${globals.host}/api/rssFeed?nonce=${storage.getItem('nonce')}&_id=${_id}`, {
+        method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-           Authorization: `Bearer ${storage.getItem("token")}`,
-        },
-        method: 'DELETE'
-      }).then(response => {
-        console.log(response);
-        if (!response.ok) { throw response }
-        return response.json() 
+          Authorization: `Bearer ${storage.getItem('token')}`,
+        }
       })
-			.then((res) => {
-        const updatedFeedItems = [...feedItems].filter(
-          (feedItem) => feedItem._id !== _id
-        );
-        setFeedItems(updatedFeedItems); 
-			}).catch((err) => {
-        if(err.status === 401) {
-					logout();
-				}
-      });
+        .then(response => response.json())
+        .then(() => setFeedItems([...feedItems].filter((feedItem) => feedItem._id !== _id)))
+        .catch((err) => {
+          if (err.status === 401) {
+            logout();
+          }
+        });
     }
   };
-
-  const handleLogout = () => {
-		logout();
-	};
 
   const editFeedItem = (_id) => {
     feedItems.find(item => item._id === _id).edit = true;
     router.push('/createFeed');
-    storage.setItem("feedItems", feedItems);
+    storage.setItem('feedItems', feedItems);
   };
 
   return (
@@ -102,9 +83,11 @@ export default function ManageFeed(): React.ReactElement {
           </Link>
         ) : null}
 
-      <Button onClick={handleLogout}>
-				Logout
-			</Button>
+        <Button onClick={() => {
+          logout();
+        }}>
+          Logout
+        </Button>
       </main>
     </Dialog>
   );
