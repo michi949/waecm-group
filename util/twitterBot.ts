@@ -1,8 +1,8 @@
-import { getEnvironmentVariable } from "./environmentVariables";
+import {getEnvironmentVariable} from './environmentVariables';
 import Twitter from 'twitter';
-import { parseStringPromise } from 'xml2js';
-import { IFeedItem } from "../data/rssFeedSchema";
-import { findTweetByUrlInDatabase, getAllRssFeedFromDatabase, setTweetIntoDatabase } from "./databaseConnector";
+import {parseStringPromise} from 'xml2js';
+import {IFeedItem} from '../data/rssFeedSchema';
+import {findTweetByUrlInDatabase, getAllRssFeedFromDatabase, setTweetIntoDatabase} from './databaseConnector';
 
 let sendAble = true;
 
@@ -13,13 +13,12 @@ const twitterClient = new Twitter({
     access_token_secret: getEnvironmentVariable("TWITTER_ACCESS_TOKEN_SECRET")
 });
 
-export function peformTwitterBot() {
+export function performTwitterBot() {
     sendAble = true;
     getAllRssFeedFromDatabase().then((a: IFeedItem[]) => {
         if (a.length === 0) {
             console.log("No feeds in List!");
         }
-
         checkFeedForKeyWords(a);
     });
 }
@@ -34,15 +33,13 @@ const checkFeedForKeyWords = (feeds: IFeedItem[]) => {
         .then(result => {
             const keywords = rssFeed.keywords.split(",");
             return Promise.all(result["rdf:RDF"].item.map(async element => {
-        
                 if (searchFieldForKeyword(element.title[0], element["dc:subject"][0], keywords, rssFeed.includeAll)) {
                     checkInDatabaseForDoubleAndSet(element, rssFeed.icon);
                 }
-
                 return Promise.resolve();
             }));
         })
-        .catch(error => console.log("Nothing Found"));
+        .catch(() => console.log("Nothing Found"));
     });
 }
 
@@ -56,7 +53,7 @@ const searchFieldForKeyword = (title: string, subject: string, keywords: string[
     } else {
         return keywords.map(keyword => title.toLowerCase().includes(keyword.toLowerCase())).some(predicate => predicate) || keywords.map(keyword => subject.toLowerCase().includes(keyword.toLowerCase())).some(predicate => predicate);
     }
-};    
+};
 
 
 const sendTweet = (tweet: string): Promise<any> => {
@@ -69,7 +66,7 @@ const sendTweet = (tweet: string): Promise<any> => {
             }
         });
     });
-};    
+};
 
 const checkInDatabaseForDoubleAndSet = (element, icon) => {
 
@@ -80,14 +77,16 @@ const checkInDatabaseForDoubleAndSet = (element, icon) => {
         if(!a) {
             if(sendAble) {
                 sendAble = false;
-                const result = sendTweet(`${title}: ${link}`);
-                result.then(a => {
-                    setTweetIntoDatabase({title: title, url: link, icon: icon}).then((b) => {
+                const cappedLink = link.substring(0,140);
+                const cappedTitle = `${title}: `.substring(0, 140 - cappedLink.length);
+                sendTweet(`${cappedTitle}: ${cappedLink}`)
+                  .then(() => {
+                    setTweetIntoDatabase({title, url: link, icon: icon}).then((b) => {
                         console.log(b);
                     });
                 }).catch(err => {
                     if(err[0].code === 187) {
-                        setTweetIntoDatabase({title: title, url: link, icon: icon}).then((b) => {
+                        setTweetIntoDatabase({title, url: link, icon: icon}).then((b) => {
                             console.log(b);
                         });
                         console.log("Saved Duplicated Tweet");

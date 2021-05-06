@@ -37,7 +37,6 @@ export default function ManageFeed(): React.ReactElement {
 
   }, []);
 
-  // TODO CHECK IF NECESSARY
   useEffect(() => {
     storage.setItem('feedItems', feedItems);
   }, [feedItems]);

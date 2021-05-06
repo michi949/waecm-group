@@ -1,5 +1,5 @@
 import globals from "./globals";
-import { peformTwitterBot } from "./twitterBot";
+import { performTwitterBot } from "./twitterBot";
 
 
 function triggerTimer() {
@@ -11,7 +11,7 @@ function triggerTimer() {
     console.log("Started");
     globals.timmerRunning = true;
     setInterval(async () => {
-        peformTwitterBot();
+        performTwitterBot();
     }, 78000);
 
     return;
