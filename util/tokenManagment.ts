@@ -15,9 +15,7 @@ export const logout = () => {
 	window.location.assign(`${globals.openid_host}/logout/?client_id=${globals.openid_clientid}&redirect_uri=${globals.host}&scope=openid%20profile&nonce=${nonce}`);
 };
 
-export const checkLoginState = (): boolean => {
-	return !(storage.getItem("token") === "" || storage.getItem("nonce") === "");
-}
+export const checkLoginState = () => !(storage.getItem('token') === '' || storage.getItem('nonce') === '')
 
 export function useLoggedIn() {
 	const router = useRouter();

@@ -62,7 +62,7 @@ export default function Feed(): React.ReactElement {
         {tweetItems.length !== 0 ?
           <div className="h-32 w-full text-center p-4">
             <Button onClick={() => loadNextTweetItems()}>
-              <div className="bg-gray-200 text-black font-bold rounded-3xl">Load More</div>
+              Load More
             </Button>
           </div>
           : null}

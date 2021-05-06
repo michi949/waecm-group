@@ -74,20 +74,18 @@ export default function ManageFeed(): React.ReactElement {
       <main className="flex flex-col items-center h-full">
         {feedItems.length === 0 ? <div className="m-2">currently no RSS - Feed</div> : null}
         {feedItems.map((feedItem) => FeedItem(feedItem, editFeedItem, deleteFeedItem))}
+        <div className="w-full flex">
         {feedItems.length < 3 ? (
-          <Link href="/createFeed">
-            <button
-              className="bg-gray-200 hover:bg-blue-700 hover:text-white text-black font-bold py-2 px-4 rounded-3xl">
-              + add Feed
-            </button>
-          </Link>
+            <Button onClick={() => router.push("/createFeed")}>
+              + Add Feed
+            </Button>
         ) : null}
-
         <Button onClick={() => {
           logout();
         }}>
           Logout
         </Button>
+        </div>
       </main>
     </Dialog>
   );

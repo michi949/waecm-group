@@ -4,10 +4,9 @@ import storage from '../util/storage';
 import {Navigation} from '../components/navigation';
 import Dialog from '../components/dialog';
 import {Input} from '../components/input';
-import { IFeedItem } from '../data/rssFeedSchema';
+import {IFeedItem} from '../data/rssFeedSchema';
 import globals from '../util/globals';
-import { useRouter } from 'next/router';
-import { checkLoginState, logout } from '../util/tokenManagment';
+import {logout, useLoggedIn} from '../util/tokenManagment';
 
 const generateFeedItem: () => IFeedItem = () => ({
   edit: false,
@@ -20,25 +19,18 @@ const generateFeedItem: () => IFeedItem = () => ({
 });
 
 export default function CreateFeed(): React.ReactElement {
+  useLoggedIn();
   const [feedItem, setFeedItem] = useState<IFeedItem>(generateFeedItem());
-  const router = useRouter();
 
-  const patchFeedItem = (key: string, value: any) => {
+  const patchFeedItem = (key: keyof IFeedItem, value: any) => {
     setFeedItem(feedItem => ({...feedItem, [key]: value}));
   };
 
   useEffect(() => {
-    checkLogin();
     const feedItems = storage.getItem('feedItems') ?? [];
     setFeedItem(feedItems.find(item => item.edit) ?? generateFeedItem());
     storage.setItem("feedItems", feedItems.map(item => ({...item, edit: false})));
   }, []);
-
-  const checkLogin = () => {
-    if(!checkLoginState()) {
-			router.push('/')
-		}
-  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -104,6 +96,12 @@ export default function CreateFeed(): React.ReactElement {
     }
   };
 
+  const toBase64 = file => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+  });
 
   return (
     <Dialog>
@@ -139,7 +137,7 @@ export default function CreateFeed(): React.ReactElement {
           <img src={feedItem.icon} className="max-w-12 max-h-12 m-1" alt="Icon"/>
           <input
             type="file"
-            onChange={(e) => patchFeedItem('url', URL.createObjectURL(e.target.files[0]))}
+            onChange={(e) => toBase64(e.target.files[0]).then(image => patchFeedItem('icon', image))}
             className="hidden"
             accept="image/png, image/svg"
           />
